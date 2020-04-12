@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Lobby</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Luckiest+Guy&display=swap" rel="stylesheet">
+    <style>
+        html, body {
+            height: 90%;
+            background-color: rgb(16, 152, 197);
+        }
+        .header {
+            background-color: #00BFFF;
+            /* height: 100px; */
+        }
+        .header-main-text {
+            color: white;
+            margin-top: 2%;
+            font-size: 30px;
+        }
+        .controler {
+            background-color: rgb(16, 152, 197);
+            color: white;
+            font-family: 'Luckiest Guy', cursive;
+        }
+        .row {
+            height: 100%;
+        }
+        .player-grid {
+            height: 100%;
+        }
+        .player-grid-square {
+            background-color: rgb(16, 152, 197);
+            color: white;
+            font-family: 'Alfa Slab One', cursive;
+        }
+        .player-grid-row {
+            height: 100px;
+            background-color: rgb(16, 152, 197);
+        }
+        .player-grid-name {
+            margin-left: 50%;
+            padding-top: 5%;
+            font-size: 50px;
+        }
+        .footer {
+            height: 50px;
+            background-color: rgb(3, 90, 219);
+        }
+    </style>
+  </head>
+  <body>
+    <section id="header" class="container-fluid header text-center">
+        <div class="row">
+            <div class="col-md-2 ">
+                <form class="header-main-text" action="/player-logout">
+                    <input type="submit" value="logout">
+                </form>
+            </div>
+            <div class="col-md-10 ">
+                <div class="header-main-text">Join our kahoot-like game with following pin: [0404]</div>
+            </div>
+        </div>
+    </section>
+
+    <section id="controler" class="container-fluid controler">
+        <div class="row">
+            <div id="player-count" class="col-md-4" style="font-size: 30px;"></div>
+            <div class="col-md-4" style="font-size: 50px; padding-left: 10%;">Our game!</div>
+            <div class="col-md-4" >
+                <div style="float: right; font-size: 30px;">
+                    Start
+                </div>
+                
+            </div>
+        </div>
+    </section>
+
+    <section id="player-grid" class="container-fluid player-grid">
+
+    </section>
+
+    <section id="footer" class="footer">
+        <div style="margin-left: 1%; padding-top: 8px;">
+            <i class="fas fa-info-circle fa-2x" style="background-color: white; border-radius: 20px;"></i>
+            <span style="color: white; font-size: 25px;">Waiting on Players</span>
+        </div>
+    </section>
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js"></script>
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script>
+        
+        $(function () {
+            console.log('here')
+            // console.log(JSON.parse(document.cookie))
+            var players = []
+            var loaded = false
+            var socket = io();
+            socket.on('Game Data', function(msg){
+                console.log('called!!!!')
+                players = msg
+                console.log(players)
+                //$('.header').css('background-color', 'red')
+                clearGrid()
+                FillGrid()
+            });
+            function clearGrid() {
+                $('#player-grid').empty()
+            }
+            function FillGrid() {
+                // $( 'div' ).remove( ":contains('player-grid-row')" );
+                $('#player-grid').find('div').remove()
+                // Row of 3 cols
+                $('#player-count').html('Players: ' + players.length)
+                var maxCols = 3
+                var colTracker = 0
+                var rowTracker = 0
+                var addNewRow = false
+                // Inital Row
+                var row = '<div id="grid-' + rowTracker + '" class="row player-grid-row"></div>'
+                $('.player-grid').append(row)
+                $.each(players, function(index, value) {
+                    // for each 3, create a row with 3 columns 
+                    if (colTracker < 3) {
+                        $('#grid-' + rowTracker).append('<div class="col-md-4 player-grid-square">'
+                            + '<div class="player-grid-name">' + players[index].name + '</div></div>')
+                        colTracker++
+                    } else {
+                        // Add new Row here
+                        colTracker = 0
+                        rowTracker++
+                        var row = '<div id="grid-' + rowTracker + '" class="row player-grid-row"></div>'
+                        
+                        $(row).insertAfter('#grid-' + (rowTracker-1))
+
+                        // Add New Person into new row
+                        // $('#grid-' + rowTracker).append('<div class="col-md-4 player-grid-square">' + players[index].name + '</div>')
+                        $('#grid-' + rowTracker).append('<div class="col-md-4 player-grid-square">'
+                            + '<div class="player-grid-name">' + players[index].name + '</div></div>')
+                        colTracker++
+                    }
+                })
+            }
+        });
+        
+    </script>
+  </body>
+</html>

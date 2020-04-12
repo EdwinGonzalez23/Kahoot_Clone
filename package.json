@@ -1,0 +1,19 @@
+{
+  "name": "kahoot-clone",
+  "version": "0.0.1",
+  "description": "An app that mimics the Kahoot game",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cookie-parser": "^1.4.5",
+    "express": "^4.15.2",
+    "express-session": "^1.17.0",
+    "mongodb": "^3.5.5",
+    "multer": "^1.4.2",
+    "socket.io": "^1.7.4",
+    "uuid": "^7.0.3",
+    "uuidv4": "^6.0.7"
+  },
+  "scripts": {
+    "start": "node index.js"
+  }
+}
