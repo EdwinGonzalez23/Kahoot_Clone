@@ -152,6 +152,14 @@ express.get('/create', function (req, res) {
 io.on('connection', function (socket) {
   // Send Players to Client
   io.emit('Game Data', players);
+
+  // Also added from Joey,
+  // Could potentially be done
+  // instead with express get
+  socket.on('answerJSON', function (msg) {
+    console.log(msg);
+  })
+
 });
 
 http.listen(port, function () {
@@ -175,3 +183,85 @@ function logout(id) {
     }
   }
 }
+
+// START JOEY ADD
+
+let MAX_QUESTION_TIME = 10;
+let TIMER = MAX_QUESTION_TIME;
+let gameStart = false;
+
+// Just here until we have questions coming in from database
+let questions = [
+  {
+    "_id": "5e899f49155b058abe1715ce",
+    "question": "War fought from 1754 to 1763 between Britain and France that started in the Americas and moved to Europe.",
+    "answers": ["French & Indian war", "American Civil War", "Spanish-American War", "American Civil War"], "answerindex": 0
+  },
+  {
+    "_id": "5e8d1857d1e6f77c4a17c177",
+    "question": "what is hello world",
+    "answers": ["something", "something else", "neither", "another"], "answerindex": 0
+  }
+]
+
+express.get('/game', function (req, res) {
+
+  if (gameStart === false) {
+    gameStart = true;
+    let questionNumber = 0;
+
+    // continuously called once game starts
+    var game = setInterval(function () {
+      let questionToSend = {};
+
+      io.sockets.emit('timer', TIMER);
+      TIMER--;
+
+      if (TIMER === -1) {
+        TIMER = MAX_QUESTION_TIME;
+
+        // serve next questions
+
+        if (questionNumber < questions.length) {
+          questionToSend = {
+            Q: questions[questionNumber]['question'],
+            a1: questions[questionNumber]['answers'][0],
+            a2: questions[questionNumber]['answers'][1],
+            a3: questions[questionNumber]['answers'][2],
+            a4: questions[questionNumber]['answers'][3]
+          }
+        } else {
+          questionToSend = {
+            Q: "gameover",
+            a1: "gameover",
+            a2: "gameover",
+            a3: "gameover",
+            a4: "gameover"
+          }
+
+        }
+
+        //console.log(questionToSend);
+
+        io.sockets.emit('question', questionToSend);
+        questionNumber++;
+
+      }
+    }, 1000);
+
+
+  }
+
+  res.sendFile(__dirname + '/game.html')
+
+})
+
+
+express.get('/idRequest', function (req, res) {
+  console.log("Emitting id: " + req.session.player.id + "To: " + req.session.player.name);
+  let JSONdata = JSON.stringify({id : req.session.player.id});
+  res.send(JSONdata);
+})
+
+// Also added a socket message  higher up
+// End Joey Add
