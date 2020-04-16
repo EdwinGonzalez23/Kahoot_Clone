@@ -160,6 +160,11 @@ io.on('connection', function (socket) {
     console.log(msg);
   })
 
+  // hostStartButton.html
+  socket.on('startGame', function (msg) {
+    io.emit('ask-to-start-game', 'game');
+  })
+
 });
 
 http.listen(port, function () {
@@ -261,6 +266,10 @@ express.get('/idRequest', function (req, res) {
   console.log("Emitting id: " + req.session.player.id + "To: " + req.session.player.name);
   let JSONdata = JSON.stringify({id : req.session.player.id});
   res.send(JSONdata);
+})
+
+express.get('/hostStartButton', function (req, res) {
+  res.sendFile(__dirname + '/hostStartButton.html')
 })
 
 // Also added a socket message  higher up

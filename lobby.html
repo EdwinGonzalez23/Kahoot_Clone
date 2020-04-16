@@ -155,6 +155,9 @@
                     }
                 })
             }
+            socket.on('ask-to-start-game', function(url){
+                window.location.replace(url)
+            })
         });
         
     </script>
