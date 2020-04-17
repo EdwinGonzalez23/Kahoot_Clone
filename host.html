@@ -12,22 +12,22 @@
   <body>
     <section class="container-fluid">
         <div>
-            <form id="main-form" action="/host-login" method="POST" class="user-login">
+            <form id="main-form" action="/host-login" method="POST" class="container-fluid">
                 <input type="hidden" id="uuid" name="uuid">
                 <div style="margin-left: 40%;">Please Login to Create Game</div>
-                <div class="form-group">
+                <!--div class="form-group">
                     <label for="name">Id</label>
                     <input type="text" class="form-control" id="id" aria-describedby="emailHelp"
                         placeholder="Id" name="Id">
-                </div>
+                </div-->
                 <div class="form-group">
-                    <label for="name">Name</label>
+                    <label for="name">Username</label>
                     <input type="text" class="form-control" id="name" aria-describedby="emailHelp"
-                        placeholder="Name" name="Name">
+                        placeholder="username" name="username">
                 </div>
                 <div class="form-group">
-                    <label for="pin">Password</label>
-                    <input type="password" class="form-control" id="password" placeholder="PIN" name="Password">
+                    <label for="password">Password</label>
+                    <input type="password" class="form-control" id="password" placeholder="password" name="password">
                 </div>
                 <button type="submit" class="btn btn-primary">Join</button>
             </form>

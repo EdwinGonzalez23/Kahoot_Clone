@@ -1,0 +1,102 @@
+<html>
+    <body>
+    <form action="/processquestions" method="POST">
+        <label for="questionset">name your question set</label>
+        <br>
+        <input type="text" id="collectioname" name="collectioname">
+        <br>
+        <label for="test">Enter your questions and answers</label>
+        <br>
+        <label for="test">Also, select which is the correct answer</label>
+        <br>
+        <label for="test">question 1</label>
+        <br>
+        <input type="text" id="q0" name="q0">
+        <br>
+        <label for="test">your answers</label>
+        <br>
+        <div>
+        <input type="text" id="q0a0" name="q0a0">
+        <br>
+        <input type="text" id="q0a1" name="q0a1">
+        <br>
+        <input type="text" id="q0a2" name="q0a2">
+        <br>
+        <input type="text" id="q0a3" name="q0a3">
+        <br>
+        </div>
+        <div id="new_input">
+        </div>
+        <br>
+        <button type="button" onclick="make_new()" name="create_new">add new question</button>
+        <br>
+        <br>
+        <button type="submit" name="submit">create</button>
+        <br>        
+    </form>
+    <script type="text/javascript">
+        //window.onload = 
+        var counter = 1;
+        function make_new(){
+            var container = document.getElementById("new_input");
+            var newlabel = document.createElement("label");
+            newlabel.type = "text";
+            //newlabel.name = "question" + counter;
+            //var cc= counter+1;
+            newlabel.innerHTML = "question" + (counter+1);
+            container.appendChild(newlabel);
+            container.appendChild(document.createElement("br"));
+            var newinput = document.createElement("input");
+            newinput.type = "text";
+            newinput.setAttribute('name','q' + counter);
+            container.appendChild(newinput);
+            container.appendChild(document.createElement("br"));
+            var newlabel = document.createElement("label");
+            newlabel.type = "text";
+            newlabel.innerHTML = "Enter your answers";
+            container.appendChild(newlabel);
+            container.appendChild(document.createElement("br"));
+            //var newinput = [document.createElement("input"),document.createElement("input"),document.createElement("input"),document.createElement("input")];
+            //var i =0;
+            //for(i = 0; i < 4; i++){
+                //var newinput = document.createElement("input");
+                //newinput[i].type = "text";
+                //newinput[i].setAttribute('name','q'+counter+'a'+i);
+                //container.appendChild(newinput[i]);
+                //container.appendChild(newinput);
+                //container.appendChild("br");
+            //}
+            var newinput = document.createElement("input");
+            newinput.type = "text";
+            newinput.setAttribute('name','q'+counter+'a'+0);
+            container.appendChild(newinput);
+            container.appendChild(document.createElement("br"));
+            var newinput = document.createElement("input");
+            newinput.type = "text";
+            newinput.setAttribute('name','q'+counter+'a'+1);
+            container.appendChild(newinput);
+            container.appendChild(document.createElement("br"));
+            var newinput = document.createElement("input");
+            newinput.type = "text";
+            newinput.setAttribute('name','q'+counter+'a'+2);
+            container.appendChild(newinput);
+            container.appendChild(document.createElement("br"));
+            var newinput = document.createElement("input");
+            newinput.type = "text";
+            newinput.setAttribute('name','q'+counter+'a'+3);
+            container.appendChild(newinput);
+            //container.appendChild(newinput);
+            //container.appendChild(documnet.createElement(input type="text" id="q1a0" name="q1a0");
+            //container.appendChild(document.createElement("br"));
+            //container.appendChild(documnet.createElement(input type="text" id="q0a1" name="q0a1");
+            //container.appendChild(document.createElement("br"));
+            //container.appendChild(documnet.createElement(input type="text" id="q0a2" name="q0a2");
+            //container.appendChild(document.createElement("br"));
+            //container.appendChild(documnet.createElement(input type="text" id="q0a3" name="q0a3");
+            //container.appendChild(document.createElement("br"));
+            container.appendChild(document.createElement("br"));
+            counter++;
+        }
+    </script>
+    </body>
+</html>
