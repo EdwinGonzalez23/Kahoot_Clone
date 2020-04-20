@@ -26,9 +26,10 @@ express.use(cookieParser());
 express.use(session({
 secret: "Your secret key"
 }));
-//var MongoClient = require('mongodb').MongoClient;
-var url = "mongodb://localhost:27017/kahoot";
-mon.connect(url);
+var MongoClient = require('mongodb').MongoClient;
+var url = 'mongodb://localhost:27017';
+var dburl = "mongodb://localhost:27017/kahoot";
+mon.connect(dburl);
 var players = []
 // Good thing this isn't an app we are selling
 // Mimic Registered Users
@@ -71,32 +72,32 @@ res.redirect('/')
 
 // Player Logout Form Submit
 express.get('/player-logout', function (req, res) {
-        logout(req.session.player.id)
-        io.emit('Game Data', players);
+    logout(req.session.player.id)
+    io.emit('Game Data', players);
 
-        req.session.destroy(function () {
-                console.log('user logged out')
-                })
-        res.redirect('/')
-        })
+    req.session.destroy(function () {
+        console.log('user logged out')
+    })
+    res.redirect('/')
+})
 
 // Game Lobby (waiting area)
 express.get('/lobby', function (req, res) {
-        if (req.session.player) {
+    if (req.session.player) {
         res.sendFile(__dirname + '/lobby.html');
-        } else {
+    } else {
         res.redirect('/')
-        }
-        })
+    }
+})
 
 // Host Login Screen
 express.get('/host', function (req, res) {
-        if (req.session.user) {
+    if (req.session.user) {
         res.redirect('/create')
-        } else {
+    } else {
         res.sendFile(__dirname + '/host.html')
-        }
-        })
+    }
+})
 
 // Host Logout Form Submit
 express.get('/host-logout', function (req, res) {
@@ -271,10 +272,11 @@ express.get('/idRequest', function (req, res) {
 // End Joey Add
 // alex starts here
 express.get('/createuser',function(req, res){//used for creating host user
-        res.sendFile(__dirname +'/createuser.html')
-        });
+    res.sendFile(__dirname +'/createuser.html')
+});
 
 express.post('/host/makenewhost',(req,res,next)=>{
+    mon.connect(dburl);
     d_id = makeid();
     var user = new User({
         username : req.body.username,
@@ -294,29 +296,33 @@ express.post('/host/makenewhost',(req,res,next)=>{
         }
     });
     //return res.sendFile(__dirname +'/loginhost.html');
+    //mon.close();
     res.redirect('/host');
 
 });
 express.post('/host-login', function (req, res, next) {
-        //console.log("trying to authenticate: this got called");
-        //console.log(req.body.username);
-        //console.log(req.body.password);
-        if (req.body.username && req.body.password) {
-                User.authenticate(req.body.username, req.body.password, function (err, user) {
-                        if (err || !user) {
-                                var err = new Error("Bad username and password combination");
-                                return next(err);
-                        }
-                        else {
-                                //console.log(user.documentid);
-                                //req.session.documentid = user.documentid;
-                                //console.log(req.session.documentid);
-                                req.session.user = user;
-                                //return res.redirect("you are logged in");
-                                return res.redirect('/host');
-                        }
-                })
-        }
+    
+    //console.log("trying to authenticate: this got called");
+    //console.log(req.body.username);
+    //console.log(req.body.password);
+    mon.connect(dburl);
+    if (req.body.username && req.body.password) {
+        User.authenticate(req.body.username, req.body.password, function (err, user) {
+            if (err || !user) {
+                var err = new Error("Bad username and password combination");
+                return next(err);
+            }
+            else {
+                //console.log(user.documentid);
+                //req.session.documentid = user.documentid;
+                //console.log(req.session.documentid);
+                req.session.user = user;
+                //return res.redirect("you are logged in");
+                //mon.close();
+                return res.redirect('/host');
+            }
+        })
+    }
 });
 
 //express.get('/loginhost',function(req,res){
@@ -324,11 +330,34 @@ express.post('/host-login', function (req, res, next) {
 //        })
 
 express.get('/createquestions',function(req,res){
+    if(!req.session.user){
+        return res.redirect('host');
+    }
     return res.sendFile(__dirname + '/createquestions.html');
 })
-express.post('/processquestions',function(req,res){//for checking remove later
-        console.log(req.body);
+express.post('/processquestions',function(req,res){
+    //console.log(req.body);//for checking remove later
+    if (!req.session.user) {
+        res.redirect('/host');
+    }
+    //save questions to db
+    //then redirect back to create game or something 
     return res.redirect("we tried to parse to console here");
+});
+express.post('/savequestionset',function(req,res){
+    //first get user doc id
+    if(!req.session.user){
+        return res.redirect('/host');
+    }
+    //else{
+
+    //}
+});
+express.get('/addquestion',function(req,res){
+    if(!req.session.user){
+        return res.redirect('host');
+    }
+    return res.sendFile(__dirname + '/addquestion.html');
 })
 function makeid(){
     const length = 24;
@@ -341,4 +370,134 @@ function makeid(){
     //console.log(result);//for checking
     return result;
 }
+express.get('/getquestions',function(req, res){
+    if(!req.session.user){
+        return res.redirect('/host');
+    }
+    var collection = req.query['collection']
+    exports.getallindoc('test_questions','mcgame',function(docs){
+        res.jsonp(docs);
+    });
+    //res.jsonp(collection);
+    //res.jsonp("not yet implemented");
+    //res.jsonp(retquestions);
+});
+/*express.get('/updateonerec',function(req,res){//for testing delete if necessary
+    var myfuparray = ['this is one','this is two','this is four','this is five'];
+    var mcollection= 'mydocs';
+    var mdb= 'testupdate';
+    //var mq= {mykey:'thisisnotit'};
+    var mqkey = 'mykey';
+    var mqvalue = 'someonehelpme';
+    var mq = {mykey:mqvalue};
+    var updateval = {$addToSet:{'somearr':{$each: myfuparray}}};
+    exports.updateRecordArray(mcollection,mdb,mq,updateval,function(result){
+        //console.log(result);
+    });
+    res.redirect('/host');
+})*/
+express.post('/updateonerec',function(req,res){
+    var mcollection= req.body.collectionname;
+    var mdb= req.body.whichdb;
+    var myqkey = req.body.findkey;
+    var myqvalue= req.body.findvalue;
+    var mq = {myqkey:myqvalue};
+    var arraykey = req.body.arrkey;
+    var arrayvalue = req.body.arrlist;
+    if(Array.isArray(arrayvalue)){
+        var updateval = {$addToSet:{arraykey:{$each: arrayvalue}}};    
+    }
+    else {
+        var updateval = { $addToSet: { arraykey: arrayvalue } };
+    }
+    exports.updateRecordArray(mcollection,mdb,mq,updateval,function(result){
+        //console.log(result);
+    });
+    res.redirect('/host');
+});
+express.post('/insertquestion',function(req,res){
+    var collectionname= req.body.collectionname;
+    var mcollection = collectionname.replace(/ /g,"_");
+    //var mdb= req.body.whichdb;
+    var mdb = 'mcgame';
+    //var myqkey = req.body.findkey;
+    //var myqvalue= req.body.findvalue;
+    //var mq = {myqkey:myqvalue};
+    var ans0 = req.body.answer0;
+    var ans1 = req.body.answer1;
+    var ans2 = req.body.answer2;
+    var ans3 = req.body.answer3;
+    var questiontext = req.body.question;
+    var correctindex = req.body.answerindex;
+    var answerarray = [ans0,ans1,ans2,ans3];
+    var insertval = {question:questiontext,answers:answerarray,answerindex:correctindex};
+    //var arraykey = req.body.arrkey;
+    //var arrayvalue = req.body.arrlist;
+    
+    exports.insertRecord(mcollection,mdb,insertval,function(result){
+        //console.log(result);
+    });
+    res.redirect('/host');
+})
+exports.getallindoc = function(collection, dbname, callback){
+    MongoClient.connect(url, function(err, client) {
+        var dbo = client.db(dbname);
+        //var cursor = db.collection('question');//.find();
+        dbo.collection(collection).find({}).toArray(function(err,docs){
+            //console.log("found");
+            //exports.retquestions = function(){
+            //    return docs;
+            //}
+            callback(docs);
+            client.close();
+        }); 
+        
+    });
+}
+exports.fineoneindoc = function(collection, dbname, myquery,callback){
+    MongoClient.connect(url, function(err, client) {
+        var dbo = client.db(dbname);
+        //var cursor = db.collection('question');//.find();
+        dbo.collection(collection).find(myquery).toArray(function(err,docs){
+            //console.log("found");
+            //exports.retquestions = function(){
+            //    return docs;
+            //}
+            callback(docs);
+            client.close();
+        }); 
+        
+    });
+}
+//exports.makeCollection = function(){
+//
+//};
+exports.updateRecordArray = function(collection,dbname,mquery,updatearray,callback){
+    //var mquery = {documentid = userdocsid};
+    MongoClient.connect(url,function(err, client){
+        var dbo = client.db(dbname);
+        dbo.collection(collection).update(mquery,updatearray,{upsert:true},function(err,result){
+            if(err){
+                console.log("error updating array. why?");
+                throw err;
+            }
+            callback(result);
+            client.close();
+        });
+    })
+};
+exports.insertRecord = function(collection,dbname,updatearray,callback){
+    //var mquery = {documentid = userdocsid};
+    MongoClient.connect(url,function(err, client){
+        var dbo = client.db(dbname);
+        dbo.collection(collection).insertOne(updatearray,function(err,result){
+            if(err){
+                console.log("error inserting array. why?");
+                throw err;
+            }
+            callback(result);
+            client.close();
+        });
+    })
+};
 // end alex add
