@@ -9,7 +9,10 @@ var multer = require('multer');
 var upload = multer();
 var session = require('express-session');
 var cookieParser = require('cookie-parser');
+//some new things I'll need
 var mon = require('mongoose');
+//express.engine('html',require('ejs').renderFile);
+//
 const {
 v4: uuidv4
 } = require('uuid');
@@ -353,7 +356,7 @@ express.post('/savequestionset',function(req,res){
 
     //}
 });
-express.get('/addquestion',function(req,res){
+express.get('/addquestion/*',function(req,res){
     if(!req.session.user){
         return res.redirect('host');
     }
@@ -382,6 +385,30 @@ express.get('/getquestions',function(req, res){
     //res.jsonp("not yet implemented");
     //res.jsonp(retquestions);
 });
+express.get('/getcollections',function(req, res){
+    if(!req.session.user){
+    //    return res.redirect('/host');
+    res.send(JSON.stringify({"null":"null"}));
+    }
+    else{
+        let dbn = "mcgame";
+        let mcollection = "my_collections";
+        //var mydocid = req.query.collectionsid;
+        var mydocid = req.session.user.documentid;
+        //let mq = {userdocumentid:"c15bZehI4lMwSsviGn2YULdV"};
+        let mq = {userdocumentid:mydocid};
+        exports.fineoneindoc(mcollection,dbn,mq,function(docs){
+            //console.log(docs);//for testing remove after some tests
+            //console.log(docs[0]['collections']);//should only have on collection
+            //res.jsonp(docs);
+            //docs = docs.replace(/_/g," ");
+            //res.send(JSON.stringify(docs[0]['collections'].replace(/_/g," ")));
+            res.send(JSON.stringify(docs[0]['collections']));
+        })
+        //res.redirect('/game');
+    }
+})
+//express.get('/addquestiontoset')
 /*express.get('/updateonerec',function(req,res){//for testing delete if necessary
     var myfuparray = ['this is one','this is two','this is four','this is five'];
     var mcollection= 'mydocs';
@@ -438,7 +465,32 @@ express.post('/insertquestion',function(req,res){
         //console.log(result);
     });
     res.redirect('/host');
+});
+express.get('/yourquestionsets',function(req,res){
+    if(!req.session.user){
+        return res.redirect('/host');
+    }
+    else{//dirty way to do it | should replace this with io.emit?
+        
+        return res.sendFile(__dirname + '/yourquestionsets.html');
+        //res.render('yourquestionsets',{docid:req.session.user.documentid},function(err,html){
+        //});
+        //express.render('yourquestionsets',{},function(err,html){
+        //express.render('yourquestionsets',{docid:req.session.user.documentid},function(err,html){
+        //});
+    }
 })
+express.post('/userdocid',function(req,res){
+    if(!req.session.user){
+        //return res.redirect('/host');
+    }
+    else{
+        //res.json({udata:req.session.user.documentid});
+        var myres = req.session.user.documentid;
+        res.send(myres);
+    }
+});
+
 exports.getallindoc = function(collection, dbname, callback){
     MongoClient.connect(url, function(err, client) {
         var dbo = client.db(dbname);

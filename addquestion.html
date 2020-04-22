@@ -11,10 +11,14 @@
     </head>
     <body>
     <form action="/insertquestion" method="POST" class="container-fluid">
-        <label for="questionset">name your question set</label>
+        
+        <input type="text" id="collectionname" name="collectionname" size="80" value="your question set" readonly="readonly">
         <br>
-        <input type="text" id="collectioname" name="collectionname" size="80">
+        
+        <!--
+        <h2 id="collectionname">Enter your question and answers</h2>
         <br>
+        -->
         <label for="text">Enter your question and answers</label>
         <br>
         <label for="text">Then, select which is the correct answer</label>
@@ -49,5 +53,18 @@
         <button type="submit" name="submit">create</button>
         <br>        
     </form>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script>
+            $(document).ready(function()
+            {
+                var currentwindow = window.location;
+                var pname = currentwindow.pathname;
+                var mytag = pname.substr(pname.lastIndexOf('/')+1,pname.length);
+                //console.print(mytag);
+                document.getElementById('collectionname').value = mytag;
+                
+            }
+            );
+        </script>
     </body>
 </html>
