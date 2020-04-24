@@ -378,7 +378,7 @@ express.get('/getquestions',function(req, res){
         return res.redirect('/host');
     }
     var collection = req.query['collection']
-    exports.getallindoc('test_questions','mcgame',function(docs){
+    exports.getallindoc(collection,'mcgame',function(docs){
         res.jsonp(docs);
     });
     //res.jsonp(collection);
