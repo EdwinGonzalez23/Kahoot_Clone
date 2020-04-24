@@ -56,7 +56,9 @@ express.get('/', function (req, res) {
 express.post('/player-login', function (req, res) {
   var player = {
     id: uuidv4(),
-    name: req.body.Name
+    name: req.body.Name,
+    score: 0,
+    answer: []
   }
   if (!playerLoggedIn(player.id) && req.body.PIN == pin) {
     players.push(player)
@@ -157,7 +159,25 @@ io.on('connection', function (socket) {
   // Could potentially be done
   // instead with express get
   socket.on('answerJSON', function (msg) {
-    console.log(msg);
+    var answerJSON = JSON.parse(msg);
+    console.log(answerJSON)
+   // console.log(msg);
+    
+    for(var key in players){
+      //console.log(players[key]['id'] + '  0-0-0 ' +  );
+      if(players[key]['id'] == answerJSON['id']){
+        players[key].answer.push(
+            {answer: answerJSON['answer'], time: answerJSON['time']}
+          )
+        players[key].score += answerJSON['time'] * 100
+      }
+    }
+
+    console.log(players)
+
+
+    // players[].answers.push.msg;
+    // console.log()
   })
 
 });
@@ -205,12 +225,9 @@ let questions = [
 ]
 
 express.get('/game', function (req, res) {
-
   if (gameStart === false) {
     gameStart = true;
     let questionNumber = 0;
-
-    // continuously called once game starts
     var game = setInterval(function () {
       let questionToSend = {};
 
@@ -219,9 +236,6 @@ express.get('/game', function (req, res) {
 
       if (TIMER === -1) {
         TIMER = MAX_QUESTION_TIME;
-
-        // serve next questions
-
         if (questionNumber < questions.length) {
           questionToSend = {
             Q: questions[questionNumber]['question'],
@@ -240,16 +254,11 @@ express.get('/game', function (req, res) {
           }
 
         }
-
-        //console.log(questionToSend);
-
         io.sockets.emit('question', questionToSend);
         questionNumber++;
 
       }
     }, 1000);
-
-
   }
 
   res.sendFile(__dirname + '/game.html')
@@ -263,5 +272,30 @@ express.get('/idRequest', function (req, res) {
   res.send(JSONdata);
 })
 
+express.get('/results', function (req, res) {
+  res.sendFile(__dirname + '/results.html')
+})
+
+express.get('/resultsRequest', function (req, res) {
+
+  for(var key in players){
+    if(players[key]['id'] == req.session.player.id){
+      res.send(JSON.stringify(players[key].answer));
+    }
+  }
+})
+
+express.get('/scoreboard', function (req, res) {
+  res.sendFile(__dirname + '/scoreboard.html')
+})
+
+express.get('/scoreboard-score-get', function (req, res) {
+  res.send(JSON.stringify(players));
+  // for(var key in players){
+  //   if(players[key]['id'] == req.session.player.id){
+  //     res.send(JSON.stringify(players[key].answer));
+  //   }
+  // }
+})
 // Also added a socket message  higher up
 // End Joey Add

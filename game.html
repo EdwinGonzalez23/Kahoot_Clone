@@ -86,10 +86,8 @@
 
         $( document ).ready(function() {
           $.get("/idRequest", function (data) {
-          let requestData = JSON.parse(data);
-          //console.log("Requested ID: " + requestData['id']);
-          answerJSON['id'] = requestData['id'];
-          //console.log(answerJSON);
+            let requestData = JSON.parse(data);
+            answerJSON['id'] = requestData['id'];
         });
       });
  
@@ -118,8 +116,7 @@
         })
 
 
-        // might be better to just have a request
-        // to start timer
+        
         socket.on('timer', function (time) {
           $('#timer').html(time);
         })
@@ -131,6 +128,9 @@
 
           socket.emit('answerJSON', JSON.stringify(answerJSON));
 
+
+          answerJSON['answer'] = -1;
+          answerJSON['time'] = 0;
 
           $("#question-text").html(question['Q']);
           $("#answer-1").html(question['a1']);
