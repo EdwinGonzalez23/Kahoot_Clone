@@ -245,14 +245,8 @@ express.get('/game', function (req, res) {
             a4: questions[questionNumber]['answers'][3]
           }
         } else {
-          questionToSend = {
-            Q: "gameover",
-            a1: "gameover",
-            a2: "gameover",
-            a3: "gameover",
-            a4: "gameover"
-          }
-
+            //sends redirect to all in game to scoreboard
+            io.sockets.emit('go-to-scoreboard', 'scoreboard');
         }
         io.sockets.emit('question', questionToSend);
         questionNumber++;
