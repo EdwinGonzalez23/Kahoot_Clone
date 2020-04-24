@@ -1,6 +1,5 @@
 <!doctype html>
 <html lang="en">
-
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -13,6 +12,10 @@
     <style>
         body {
             background-color: #1098c5;
+        }
+
+        .bg-secondary {
+            background-color: #f7f700!important;
         }
     </style>
 
@@ -56,96 +59,52 @@
 
     <script>
         $(document).ready(function () {
-            
+            let string = 'bg-success'
+            let thisPlayerID = '';
+
             $.get("/idRequest", function (data) {
                 let requestData = JSON.parse(data);
                 //console.log("Requested ID: " + requestData['id']);
-                myID = requestData['id'];
-
-            
-
-
-            console.log(myID)
-
-            var testArray = [{
-                id: "1520f379-a1b4-4ded-ba85-3b6f38d00fe4",
-                name: "player -1",
-                score: 99999,
-                answer: [
-
-                ]
-            }]
-
-            for (var q = 0; q < 30; q++) {
-                testArray.push(
-                    {
-                        id: "1520f379-a1b4-4ded-ba85ZZZZZZZZZZZ",
-                        name: "player " + q,
-                        score: Math.floor(q * Math.random() * 1000),
-                        answer: [
-
-                        ]
-                    }
-                )
-            }
-
-            console.log(testArray);
-
-            // puts top score
-            testArray.sort(function (a, b) {
-                return b['score'] - a['score'];
+                thisPlayerID = requestData['id'];
             });
 
-            for (var i = 0; i < testArray.length; i++) {
-                $(".player-score-cards").append(
-                    `
-                        <div class="card bg-light my-2">
+           
+
+            $.get("/scoreboard-score-get", function (data) {
+                let requestData = JSON.parse(data);
+                console.log(requestData);
+
+                requestData.sort(function (a, b) {
+                    return b['score'] - a['score'];
+                });
+
+                // Going to change color of player card
+                for (var i = 0; i < requestData.length; i++) {
+                    $(".player-score-cards").append(
+                        `
+                        <div class="card ${thisPlayerID == requestData[i]['id'] ? 'bg-secondary' : 'bg-light'} my-2">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between">
                                     <h3 class="text-left">
-                                    `
-                    + testArray[i]['name'] +
-                    `
+                                        ${requestData[i]['name']}                                   
                                     </h3>
                              
-                                    <h3 class="text-right"> `
-                    + testArray[i]['score'] +
-                    `
+                                    <h3 class="text-right">
+                                        ${requestData[i]['score']}                       
                                     </h3>
                                     </div>
                                 </div>
                             </div>
                         </div>
                 `
-                );
-
-            }
-        });
-        });
-
-        // $(document).ready(function () {
-        //     $.get("/scoreboard-score-get", function (data) {
-        //         let requestData = JSON.parse(data);
-
-        //         console.log(requestData);
+                    );
 
 
+                };
 
-        //         for (var i = 0; i < requestData.length; i++) {
-        //             $(".player-score-cards").append(
-        //                 `
-        //                 <div class="card">
-        //                     <div class="card-body">
-        //                         This is some text within a card body.
-        //                     </div>
-        //                 </div>
-        //                 `
-        //             );
-        //         }
+            });
 
-        //     });
-        // });
-
+        })
 
     </script>
 </body>
