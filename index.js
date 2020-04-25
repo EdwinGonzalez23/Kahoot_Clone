@@ -180,6 +180,11 @@ io.on('connection', function (socket) {
     // console.log()
   })
 
+  // hostStartButton.html
+  socket.on('startGame', function (msg) {
+    io.emit('ask-to-start-game', 'game');
+  })
+
 });
 
 http.listen(port, function () {
@@ -224,16 +229,15 @@ let questions = [
   }
 ]
 
-express.get('/game', function (req, res) {
+express.get('/sendQuestionsFromHost', function(req, res){
+  console.log("Host Started Game");
   if (gameStart === false) {
     gameStart = true;
     let questionNumber = 0;
-    var game = setInterval(function () {
+    setInterval(function () {
       let questionToSend = {};
-
       io.sockets.emit('timer', TIMER);
       TIMER--;
-
       if (TIMER === -1) {
         TIMER = MAX_QUESTION_TIME;
         if (questionNumber < questions.length) {
@@ -255,10 +259,14 @@ express.get('/game', function (req, res) {
     }, 1000);
   }
 
-  res.sendFile(__dirname + '/game.html')
+  
 
 })
 
+express.get('/game', function (req, res) {
+  res.sendFile(__dirname + '/game.html')
+
+})
 
 express.get('/idRequest', function (req, res) {
   console.log("Emitting id: " + req.session.player.id + "To: " + req.session.player.name);
@@ -291,5 +299,9 @@ express.get('/scoreboard-score-get', function (req, res) {
   //   }
   // }
 })
+express.get('/hostStartButton', function (req, res) {
+  res.sendFile(__dirname + '/hostStartButton.html')
+})
+
 // Also added a socket message  higher up
 // End Joey Add
