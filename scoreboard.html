@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -15,7 +16,7 @@
         }
 
         .bg-secondary {
-            background-color: #f7f700!important;
+            background-color: #f7f700 !important;
         }
     </style>
 
@@ -58,17 +59,14 @@
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
 
     <script>
+
+
+
+        //console.log(idCheck());
+
         $(document).ready(function () {
             let string = 'bg-success'
             let thisPlayerID = '';
-
-            $.get("/idRequest", function (data) {
-                let requestData = JSON.parse(data);
-                //console.log("Requested ID: " + requestData['id']);
-                thisPlayerID = requestData['id'];
-            });
-
-           
 
             $.get("/scoreboard-score-get", function (data) {
                 let requestData = JSON.parse(data);
@@ -82,7 +80,7 @@
                 for (var i = 0; i < requestData.length; i++) {
                     $(".player-score-cards").append(
                         `
-                        <div class="card ${thisPlayerID == requestData[i]['id'] ? 'bg-secondary' : 'bg-light'} my-2">
+                        <div class="card ${requestData[i]['id']} my-2">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between">
                                     <h3 class="text-left">
@@ -100,12 +98,23 @@
                     );
 
 
+                    $.get("/idRequest", function (data) {
+                        let thisPlayerID = JSON.parse(data);
+                        if($(".card").hasClass(thisPlayerID['id'])){
+                            console.log(thisPlayerID['id']);
+                            $(`.${thisPlayerID['id']}`).addClass("bg-secondary");
+                        }
+                    });
+
+
+
                 };
 
             });
 
         })
 
+        //${idCheck() == requestData[i]['id'] ? 'bg-secondary' : 'bg-light'}
     </script>
 </body>
 
