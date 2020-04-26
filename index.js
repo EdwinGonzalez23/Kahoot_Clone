@@ -31,15 +31,15 @@ var players = []
 // Good thing this isn't an app we are selling
 // Mimic Registered Users
 var users = [{
-    id: 4567,
-    name: 'bob',
-    password: 4567
-  },
-  {
-    id: 1234,
-    name: 'jane',
-    password: 1234
-  }
+  id: 4567,
+  name: 'bob',
+  password: 4567
+},
+{
+  id: 1234,
+  name: 'jane',
+  password: 1234
+}
 ]
 var pin = 1234
 
@@ -58,7 +58,9 @@ express.post('/player-login', function (req, res) {
     id: uuidv4(),
     name: req.body.Name,
     score: 0,
-    answer: []
+    previousScoreAward: 0,
+    submittedAnswers: [],
+    rightAnswers: []
   }
   if (!playerLoggedIn(player.id) && req.body.PIN == pin) {
     players.push(player)
@@ -159,21 +161,24 @@ io.on('connection', function (socket) {
   // Could potentially be done
   // instead with express get
   socket.on('answerJSON', function (msg) {
-    var answerJSON = JSON.parse(msg);
-    console.log(answerJSON)
-   // console.log(msg);
-    
-    for(var key in players){
-      //console.log(players[key]['id'] + '  0-0-0 ' +  );
-      if(players[key]['id'] == answerJSON['id']){
-        players[key].answer.push(
-            {answer: answerJSON['answer'], time: answerJSON['time']}
-          )
-        players[key].score += answerJSON['time'] * 100
-      }
-    }
+    //var answerJSON = JSON.parse(msg);
+    //console.log(answerJSON)
+    // console.log(msg);
 
-    console.log(players)
+    // for(var key in players){
+    //   //console.log(players[key]['id'] + '  0-0-0 ' +  );
+    //   if(players[key]['id'] == answerJSON['id']){
+    //     players[key].questionAnswers.push(
+    //         {qindex: answerJSON['answer'], time: answerJSON['time']}
+    //       )
+    //       console.log(players[key].questionAnswers[questionNumber])
+    //       //console.log(questions[questionNumber])
+
+    //     players[key].score += answerJSON['time'] * 100
+    //   }
+    //}
+
+    //console.log(players)
 
 
     // players[].answers.push.msg;
@@ -211,56 +216,47 @@ function logout(id) {
 
 // START JOEY ADD
 
-let MAX_QUESTION_TIME = 10;
-let TIMER = MAX_QUESTION_TIME;
+let MAX_QUESTION_TIME = 30;
+let TIMER = 5; // for start of game
 let gameStart = false;
 
 // Just here until we have questions coming in from database
 let questions = [
-  {
-    "_id": "5e899f49155b058abe1715ce",
-    "question": "War fought from 1754 to 1763 between Britain and France that started in the Americas and moved to Europe.",
-    "answers": ["French & Indian war", "American Civil War", "Spanish-American War", "American Civil War"], "answerindex": 0
-  },
-  {
-    "_id": "5e8d1857d1e6f77c4a17c177",
-    "question": "what is hello world",
-    "answers": ["something", "something else", "neither", "another"], "answerindex": 0
-  }
-]
+  //   {
+  //     "_id": "5e899f49155b058abe1715ce",
+  //     "question": "War fought from 1754 to 1763 between Britain and France that started in the Americas and moved to Europe.",
+  //     "answers": ["French & Indian war", "American Civil War", "Spanish-American War", "American Civil War"], "answerindex": 0
+  //   },
+  //   {
+  //     "_id": "5e8d1857d1e6f77c4a17c177",
+  //     "question": "what is hello world",
+  //     "answers": ["something", "something else", "neither", "another"], "answerindex": 2
+  //   }
+];
 
-express.get('/sendQuestionsFromHost', function(req, res){
-  console.log("Host Started Game");
+for (var q = 0; q < 3; q++) {
+  questions.push(
+    {
+      "_id": "5e899f49155b058abe1715ce",
+      "question": `Question Q${q} Right answer is 1`,
+      "answers": ["1", "2", "3", "4"], "answerindex": 0
+    }
+  )
+}
+
+
+var questionNumber = -1;
+
+
+
+express.get('/sendQuestionsFromHost', function (req, res) {
+
   if (gameStart === false) {
+    console.log("Host Started Game");
     gameStart = true;
-    let questionNumber = 0;
-    setInterval(function () {
-      let questionToSend = {};
-      io.sockets.emit('timer', TIMER);
-      TIMER--;
-      if (TIMER === -1) {
-        TIMER = MAX_QUESTION_TIME;
-        if (questionNumber < questions.length) {
-          questionToSend = {
-            Q: questions[questionNumber]['question'],
-            a1: questions[questionNumber]['answers'][0],
-            a2: questions[questionNumber]['answers'][1],
-            a3: questions[questionNumber]['answers'][2],
-            a4: questions[questionNumber]['answers'][3]
-          }
-        } else {
-            //sends redirect to all in game to scoreboard
-            io.sockets.emit('go-to-scoreboard', 'scoreboard');
-        }
-        io.sockets.emit('question', questionToSend);
-        questionNumber++;
-
-      }
-    }, 1000);
+    gameLoop();
   }
-
-  
-
+  res.end();
 })
 
 express.get('/game', function (req, res) {
@@ -270,22 +266,10 @@ express.get('/game', function (req, res) {
 
 express.get('/idRequest', function (req, res) {
   console.log("Emitting id: " + req.session.player.id + "To: " + req.session.player.name);
-  let JSONdata = JSON.stringify({id : req.session.player.id});
+  let JSONdata = JSON.stringify({ id: req.session.player.id });
   res.send(JSONdata);
 })
 
-express.get('/results', function (req, res) {
-  res.sendFile(__dirname + '/results.html')
-})
-
-express.get('/resultsRequest', function (req, res) {
-
-  for(var key in players){
-    if(players[key]['id'] == req.session.player.id){
-      res.send(JSON.stringify(players[key].answer));
-    }
-  }
-})
 
 express.get('/scoreboard', function (req, res) {
   res.sendFile(__dirname + '/scoreboard.html')
@@ -293,15 +277,130 @@ express.get('/scoreboard', function (req, res) {
 
 express.get('/scoreboard-score-get', function (req, res) {
   res.send(JSON.stringify(players));
-  // for(var key in players){
-  //   if(players[key]['id'] == req.session.player.id){
-  //     res.send(JSON.stringify(players[key].answer));
-  //   }
-  // }
+  res.end();
 })
 express.get('/hostStartButton', function (req, res) {
   res.sendFile(__dirname + '/hostStartButton.html')
 })
+
+express.post('/playerAnswer', function (req, res) {
+  let maxScore = 10000;
+  if (questionNumber >= 0) {
+    let playerAnswer = req.body.answer
+    //console.log(playerAnswer + " " + questions[questionNumber].answerindex);
+    for (var key in players) {
+      if (players[key].submittedAnswers.includes(questionNumber) === false) {
+        players[key].submittedAnswers.push(questionNumber);
+      }
+      let scoreChange = 0;
+      let submitNumber = parseInt(req.body.submitNumber);
+      let isCorrect = playerAnswer == questions[questionNumber].answerindex
+      let isThisPlayer = req.body.id == players[key]['id'];
+      console.log(submitNumber);
+
+      if (isThisPlayer === true) {
+        if (submitNumber > 1) {
+          if (isCorrect === true) {
+            if (players[key].rightAnswers.includes(questionNumber)) {
+              console.log("Had right Answer Already");
+            } else {
+              players[key].rightAnswers.push(questionNumber);
+              console.log("Pushed Right Answer")
+              scoreChange = maxScore - ((MAX_QUESTION_TIME - parseInt(req.body.time)) * (MAX_QUESTION_TIME * 10));
+              players[key]['previousScoreAward'] = scoreChange;
+            }
+
+          }
+          if (isCorrect === false) {
+            if (players[key].rightAnswers.includes(questionNumber) === true) {
+              players[key].rightAnswers.splice(players[key].rightAnswers.indexOf(questionNumber));
+              console.log("Had right answer, chose wrong one. Tried to splice: " + questionNumber);
+              if (submitNumber === 2) {
+                scoreChange = -maxScore;
+              } else {
+                scoreChange = -players[key]['previousScoreAward'];
+              }
+              players[key]['previousScoreAward'] = scoreChange;
+            }
+          }
+        } else {
+          if (isCorrect === true) {
+            players[key].rightAnswers.push(questionNumber);
+            console.log("Pushed Right answer")
+            if ((MAX_QUESTION_TIME - parseInt(req.body.time)) <= 5) {
+              console.log("FIRED");
+              scoreChange = maxScore;
+            } else {
+              scoreChange = maxScore - ((MAX_QUESTION_TIME - parseInt(req.body.time)) * (MAX_QUESTION_TIME * 10));
+            }
+            players[key]['previousScoreAward'] = scoreChange;
+          }
+
+        }
+
+        console.log(scoreChange);
+
+        console.log(players[key].rightAnswers);
+        console.log("Previous Score Award: " + players[key]['previousScoreAward'])
+        players[key]['score'] += scoreChange;
+
+        console.log(players[key].submittedAnswers);
+        console.log(players[key]['score']);
+        console.log("---------------------------------")
+        break;
+      }
+    }
+  }
+  res.send('Got it');
+})
+
+
+
+
+
+
+express.post('/debugResetGame', function () {
+  gameStart = false;
+  for (var key in players) {
+    players[key]['score'] = 0;
+    players[key]['rightAnswers'] = 0;
+    players[key]['wrongAnswers'] = [];
+    players[key].previousScoreAward = 0;
+  }
+  res.end();
+})
+
+
+function gameLoop() {
+  var servingQuestion = setInterval(function () {
+    let questionToSend = {};
+    io.sockets.emit('timer', TIMER);
+    TIMER--;
+    if (TIMER === -1) {
+      TIMER = MAX_QUESTION_TIME;
+      if (questionNumber < questions.length - 1) {
+        questionNumber++;
+        questionToSend = {
+          Q: questions[questionNumber]['question'],
+          a1: questions[questionNumber]['answers'][0],
+          a2: questions[questionNumber]['answers'][1],
+          a3: questions[questionNumber]['answers'][2],
+          a4: questions[questionNumber]['answers'][3]
+        }
+      } else {
+        //sends redirect to all in game to scoreboard
+        io.sockets.emit('go-to-scoreboard', 'scoreboard');
+        questionNumber = 0;
+        clearInterval(servingQuestion); // not sure if this always works, so TODO test this hard
+      }
+      io.sockets.emit('question', questionToSend);
+
+    }
+  }, 1000);
+
+}
+
+
 
 // Also added a socket message  higher up
 // End Joey Add

@@ -18,11 +18,17 @@
 
     <div class="container-fluid text-center py-5">
         <button class="btn startgame">
-            GameStart
+            Redirect Players to Questions
         </button>
+
         <button class="btn sendquestions">
           Send Questions
         </button>
+
+        <button class="btn reset">
+          Reset Game
+        </button>
+
     </div>
 
 
@@ -44,12 +50,18 @@
 
            $(".startgame").click(function () {
               socket.emit('startGame');
-           })
+              console.log("Start function ran");
+           });
 
            $(".sendquestions").click(function () {
              console.log("Clicked");
             $.get("/sendQuestionsFromHost", function (data) {});
+           });
+
+           $(".reset").click(function (){
+            $.get("/debugResetGame", function (data) {});
            })
+
 
       </script>
 </body>
