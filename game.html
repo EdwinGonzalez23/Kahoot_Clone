@@ -10,6 +10,22 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
     integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
+  <style>
+    body {
+      background-color: #1098c5;
+    }
+
+    .btn-lg {
+      padding: 10px 16px;
+      font-size: 50px;
+      line-height: 2;
+      border-radius: 6px;
+    }
+
+    .answerButtons {
+      height: 45%;
+    }
+  </style>
 
   <title>Kahoot Questions</title>
 </head>
@@ -17,7 +33,7 @@
 <body>
 
 
-  <div class="container-fluid">
+  <div class="container-fluid my-5">
     <div class="row">
       <div class="col text-center">
         <h2>Time Left</h2>
@@ -34,34 +50,35 @@
         </div>
       </div>
       <div class="col text-center">
-        <h2>Answers</h2>
+        <h2>Players Answered</h2>
         <h2 class="numAnswers">0</h2>
       </div>
     </div>
 
   </div>
 
+  <div class="container-fluid bg-dark fixed-bottom answerButtons">
+    <div class="container-fluid  py-5">
+      <div class="row hy-100">
 
-  <div class="container-fluid py-5">
-    <div class="row">
+        <div class="col justify-content-center">
+          <button id="answer-1" type="button" class="btn btn-primary btn-block btn-lg">Answer 1</button>
+        </div>
+        <div class="col">
+          <button id="answer-2" type="button" class="btn btn-success btn-block btn-lg">Answer 2</button>
+        </div>
 
-      <div class="col justify-content-center">
-        <button id="answer-1" type="button" class="btn btn-primary btn-block btn-lg">Answer 1</button>
-      </div>
-      <div class="col">
-        <button id="answer-2" type="button" class="btn btn-success btn-block btn-lg">Answer 2</button>
-      </div>
+        <div class="w-100 mb-3"></div>
 
-      <div class="w-100 mb-3"></div>
+        <div class="col">
+          <button id="answer-3" type="button" class="btn btn-warning btn-block btn-lg">Answer 3</button>
+        </div>
+        <div class="col">
+          <button id="answer-4" type="button" class="btn btn-danger btn-block btn-lg">Answer 4</button>
+        </div>
 
-      <div class="col">
-        <button id="answer-3" type="button" class="btn btn-warning btn-block btn-lg">Answer 3</button>
-      </div>
-      <div class="col">
-        <button id="answer-4" type="button" class="btn btn-danger btn-block btn-lg">Answer 4</button>
-      </div>
-
-      <div>
+        <div>
+        </div>
       </div>
 
 
@@ -81,16 +98,16 @@
       <script>
 
         var socket = io();
-        var answerJSON = {id: "", answer: -1, time: 0, submitNumber: 0}
-        
+        var answerJSON = { id: "", answer: -1, time: 0, submitNumber: 0 }
 
-        $( document ).ready(function() {
+
+        $(document).ready(function () {
           $.get("/idRequest", function (data) {
             let requestData = JSON.parse(data);
             answerJSON['id'] = requestData['id'];
+          });
         });
-      });
- 
+
 
         $(":button").click(function () {
           let buttonid = this.id;
@@ -112,18 +129,18 @@
           answerJSON['time'] = parseInt($("#timer").html());
           answerJSON['submitNumber'] += 1
 
-          $.post('playerAnswer', answerJSON, function(res){
+          $.post('playerAnswer', answerJSON, function (res) {
             console.log(res);
           })
         })
 
 
-        
+
         socket.on('timer', function (time) {
           $('#timer').html(time);
         })
 
-        socket.on('numPlayerAnswers', function(numberAnsweredQuestions){
+        socket.on('numPlayerAnswers', function (numberAnsweredQuestions) {
           console.log(numberAnsweredQuestions);
           $('.numAnswers').html(numberAnsweredQuestions);
         })
@@ -149,8 +166,8 @@
 
         })
 
-        socket.on('go-to-scoreboard', function (route){
-            window.location.replace(route);
+        socket.on('go-to-scoreboard', function (route) {
+          window.location.replace(route);
         });
 
 

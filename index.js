@@ -362,6 +362,7 @@ function gameLoop() {
     TIMER--;
     if (TIMER === -1) {
       TIMER = MAX_QUESTION_TIME;
+      numAnswered = 0;
       if (questionNumber < questions.length - 1) {
         questionNumber++;
         questionToSend = {
@@ -378,6 +379,7 @@ function gameLoop() {
         clearInterval(servingQuestion); // not sure if this always works, so TODO test this hard
       }
       io.sockets.emit('question', questionToSend);
+      io.sockets.emit('numPlayerAnswers', numAnswered);
 
     }
   }, 1000);
