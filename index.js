@@ -219,6 +219,7 @@ function logout(id) {
 let MAX_QUESTION_TIME = 30;
 let TIMER = 5; // for start of game
 let gameStart = false;
+let numAnswered = 0;
 
 // Just here until we have questions coming in from database
 let questions = [
@@ -315,26 +316,25 @@ express.post('/playerAnswer', function (req, res) {
             if (players[key].rightAnswers.includes(questionNumber) === true) {
               players[key].rightAnswers.splice(players[key].rightAnswers.indexOf(questionNumber));
               console.log("Had right answer, chose wrong one. Tried to splice: " + questionNumber);
-              if (submitNumber === 2) {
-                scoreChange = -maxScore;
-              } else {
-                scoreChange = -players[key]['previousScoreAward'];
-              }
+              scoreChange = -players[key]['previousScoreAward'];
+
               players[key]['previousScoreAward'] = scoreChange;
             }
           }
         } else {
+          players[key]['previousScoreAward'] = 0;
           if (isCorrect === true) {
             players[key].rightAnswers.push(questionNumber);
             console.log("Pushed Right answer")
             if ((MAX_QUESTION_TIME - parseInt(req.body.time)) <= 5) {
-              console.log("FIRED");
               scoreChange = maxScore;
             } else {
               scoreChange = maxScore - ((MAX_QUESTION_TIME - parseInt(req.body.time)) * (MAX_QUESTION_TIME * 10));
             }
             players[key]['previousScoreAward'] = scoreChange;
           }
+          numAnswered++;
+          io.sockets.emit('numPlayerAnswers', numAnswered);
 
         }
 
@@ -352,22 +352,6 @@ express.post('/playerAnswer', function (req, res) {
     }
   }
   res.send('Got it');
-})
-
-
-
-
-
-
-express.post('/debugResetGame', function () {
-  gameStart = false;
-  for (var key in players) {
-    players[key]['score'] = 0;
-    players[key]['rightAnswers'] = 0;
-    players[key]['wrongAnswers'] = [];
-    players[key].previousScoreAward = 0;
-  }
-  res.end();
 })
 
 

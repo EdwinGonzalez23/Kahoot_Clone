@@ -25,10 +25,6 @@
           Send Questions
         </button>
 
-        <button class="btn reset">
-          Reset Game
-        </button>
-
     </div>
 
 
@@ -58,9 +54,7 @@
             $.get("/sendQuestionsFromHost", function (data) {});
            });
 
-           $(".reset").click(function (){
-            $.get("/debugResetGame", function (data) {});
-           })
+      
 
 
       </script>

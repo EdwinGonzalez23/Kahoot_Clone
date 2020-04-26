@@ -35,7 +35,7 @@
       </div>
       <div class="col text-center">
         <h2>Answers</h2>
-        <h2>0</h2>
+        <h2 class="numAnswers">0</h2>
       </div>
     </div>
 
@@ -123,6 +123,11 @@
           $('#timer').html(time);
         })
 
+        socket.on('numPlayerAnswers', function(numberAnsweredQuestions){
+          console.log(numberAnsweredQuestions);
+          $('.numAnswers').html(numberAnsweredQuestions);
+        })
+
         // todo add a request the first time 
         // client starts page so they'll get current question
 
@@ -140,6 +145,7 @@
           $("#answer-2").html(question['a2']);
           $("#answer-3").html(question['a3']);
           $("#answer-4").html(question['a4']);
+          $('.numAnswers').html(0);
 
         })
 
