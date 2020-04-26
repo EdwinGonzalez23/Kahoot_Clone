@@ -17,13 +17,9 @@
 
     .btn-lg {
       padding: 10px 16px;
-      font-size: 50px;
+      font-size: 40px;
       line-height: 2;
       border-radius: 6px;
-    }
-
-    .answerButtons {
-      height: 45%;
     }
   </style>
 
@@ -33,7 +29,7 @@
 <body>
 
 
-  <div class="container-fluid my-5">
+  <div class="container-fluid ">
     <div class="row">
       <div class="col text-center">
         <h2>Time Left</h2>
@@ -57,28 +53,31 @@
 
   </div>
 
-  <div class="container-fluid bg-dark fixed-bottom answerButtons">
-    <div class="container-fluid  py-5">
-      <div class="row hy-100">
+  <div class="text-center">
+    <h1 id='thisPlayerScore'>Score</h1>
+  </div>
 
-        <div class="col justify-content-center">
-          <button id="answer-1" type="button" class="btn btn-primary btn-block btn-lg">Answer 1</button>
-        </div>
-        <div class="col">
-          <button id="answer-2" type="button" class="btn btn-success btn-block btn-lg">Answer 2</button>
-        </div>
 
-        <div class="w-100 mb-3"></div>
+  <div class="container-fluid bg-dark py-5 fixed-bottom">
+    <div class="row">
 
-        <div class="col">
-          <button id="answer-3" type="button" class="btn btn-warning btn-block btn-lg">Answer 3</button>
-        </div>
-        <div class="col">
-          <button id="answer-4" type="button" class="btn btn-danger btn-block btn-lg">Answer 4</button>
-        </div>
+      <div class="col justify-content-center">
+        <button id="answer-1" type="button" class="btn btn-primary btn-block btn-lg">Answer 1</button>
+      </div>
+      <div class="col">
+        <button id="answer-2" type="button" class="btn btn-success btn-block btn-lg">Answer 2</button>
+      </div>
 
-        <div>
-        </div>
+      <div class="w-100 mb-3"></div>
+
+      <div class="col">
+        <button id="answer-3" type="button" class="btn btn-warning btn-block btn-lg">Answer 3</button>
+      </div>
+      <div class="col">
+        <button id="answer-4" type="button" class="btn btn-danger btn-block btn-lg">Answer 4</button>
+      </div>
+
+      <div>
       </div>
 
 
@@ -164,7 +163,14 @@
           $("#answer-4").html(question['a4']);
           $('.numAnswers').html(0);
 
+          $.post('/get-score', answerJSON, function(thisScore){
+            console.log(thisScore);
+            $("#thisPlayerScore").html(`Score ${thisScore}`);
+          })
+
         })
+
+        
 
         socket.on('go-to-scoreboard', function (route) {
           window.location.replace(route);

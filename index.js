@@ -338,20 +338,31 @@ express.post('/playerAnswer', function (req, res) {
 
         }
 
-        console.log(scoreChange);
+        // console.log(scoreChange);
 
-        console.log(players[key].rightAnswers);
-        console.log("Previous Score Award: " + players[key]['previousScoreAward'])
+        // console.log(players[key].rightAnswers);
+        // console.log("Previous Score Award: " + players[key]['previousScoreAward'])
         players[key]['score'] += scoreChange;
 
-        console.log(players[key].submittedAnswers);
-        console.log(players[key]['score']);
-        console.log("---------------------------------")
+        // console.log(players[key].submittedAnswers);
+        // console.log(players[key]['score']);
+        // console.log("---------------------------------")
         break;
       }
     }
   }
   res.send('Got it');
+})
+
+express.post('/get-score', function(req, res) {
+  console.log(req.body.id)
+  for(var key in players){
+    if(players[key]['id'] === req.body.id){
+      res.send(players[key]['score'].toString());
+      break;
+    }
+  }
+  res.end();
 })
 
 
@@ -380,6 +391,7 @@ function gameLoop() {
       }
       io.sockets.emit('question', questionToSend);
       io.sockets.emit('numPlayerAnswers', numAnswered);
+
 
     }
   }, 1000);
