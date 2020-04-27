@@ -1,0 +1,70 @@
+<html lang="en">
+    <head>
+    <title>Title</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Luckiest+Guy&display=swap" rel="stylesheet">
+    </head>
+    <body>
+    <form action="/insertquestion" method="POST" class="container-fluid">
+        
+        <input type="text" id="collectionname" name="collectionname" size="80" value="your question set" readonly="readonly">
+        <br>
+        
+        <!--
+        <h2 id="collectionname">Enter your question and answers</h2>
+        <br>
+        -->
+        <label for="text">Enter your question and answers</label>
+        <br>
+        <label for="text">Then, select which is the correct answer</label>
+        <br>
+        <label for="text">question</label>
+        <br>
+        <input type="text" id="question" name="question" size="80">
+        <br>
+        <label for="test">your answers</label>
+        <br>
+        <div>
+        <label for="text">answer 1:</label>
+        <br>
+        <input type="text" id="answer0" name="answer0" size="80"><input type="radio" id="" value="0" name="answerindex">
+        <br>
+        <label for="text">answer 2:</label>
+        <br>
+        <input type="text" id="answer1" name="answer1" size="80"><input type="radio" id="" value="1" name="answerindex">
+        <br>
+        <label for="text">answer 3:</label>
+        <br>
+        <input type="text" id="answer2" name="answer2" size="80"><input type="radio" id="" value="2" name="answerindex">
+        <br>
+        <label for="text">answer 4:</label>
+        <br>
+        <input type="text" id="answer3" name="answer3" size="80"><input type="radio" id="" value="3" name="answerindex">
+        <br>
+        </div>
+        <div id="new_input">
+        </div>
+        <br>
+        <button type="submit" name="submit">create</button>
+        <br>        
+    </form>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script>
+            $(document).ready(function()
+            {
+                var currentwindow = window.location;
+                var pname = currentwindow.pathname;
+                var mytag = pname.substr(pname.lastIndexOf('/')+1,pname.length);
+                //console.print(mytag);
+                document.getElementById('collectionname').value = mytag;
+                
+            }
+            );
+        </script>
+    </body>
+</html>
