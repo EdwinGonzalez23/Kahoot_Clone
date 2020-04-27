@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Title</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Luckiest+Guy&display=swap"
+        rel="stylesheet">
+    <style>
+        html,
+        body {
+            height: 90%;
+            background-color: #00BFFF97;
+        }
+
+        .card-title-header {
+            font-family: 'Luckiest Guy', cursive;
+            font-size: x-large;
+        }
+
+        .top-header {
+            font-family: 'Luckiest Guy', cursive;
+            font-size: 50pt;
+            padding-left: 40%;
+            color: white;
+        }
+
+        #questions-sets {
+            /* margin-top: 5%; */
+        }
+    </style>
+</head>
+
+<body>
+    <section id="header" class="header">
+        <h1 class="top-header">Our Game!</h1>
+    </section>
+    <section id="question-sets" class="container-fluid">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body card-title-header">
+                        <div class="row">
+                            <div id="questions-set-header" class="col-md-6">
+                                Question Sets
+                            </div>
+                            <div class="col-md-6">
+                                <!-- Button trigger modal -->
+                                <button type="button" class="btn btn-primary" data-toggle="modal"
+                                    data-target="#exampleModal">
+                                    Create Set
+                                </button>
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+                                    aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Enter Set Name</h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form action="/insertquestion" method="post">
+                                                <input id="set-input" name="collectionname" type="text" placeholder="Col"/>
+                                                <input id="set-input" name="question" type="text" placeholder="question"/>
+                                                <input id="set-input" name="answer0" type="text" placeholder="choice"/>
+                                                <input id="set-input" name="answer1" type="text" placeholder="choice"/>
+                                                <input id="set-input" name="answer2" type="text" placeholder="choice"/>
+                                                <input id="set-input" name="answer3" type="text" placeholder="choice"/>
+                                                <input id="set-input" name="answerindex" type="text" placeholder="answer"/>
+                                                <!-- <input id="set-input" name="answerindex" type="text" placeholder="answer"/> -->
+                                                <input type="submit"/>
+                                                </form>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button id="set-cancel" type="button" class="btn btn-secondary"
+                                                    data-dismiss="modal">Cancel</button>
+                                                <button id="set-okay" type="button" class="btn btn-primary">Okay</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <ul id="questions-set-list" class="list-group">
+
+                </ul>
+            </div>
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body card-title-header">
+                        <div class="row">
+                            <div id="questions-header" class="col-md-6">
+                                Choose Set
+                            </div>
+                            <div class="col-md-6">
+                                <button id="question-set-button" type="button" class="btn btn-primary">Add New
+                                    Question</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="accordianId" role="tablist" aria-multiselectable="true">
+
+                </div>
+            </div>
+        </div>
+        </div>
+    </section>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+    </script>
+    <script>
+        $(document).ready(function () {
+            var questions = [{
+                    set: "Geography",
+                    questions: [{
+                            question: "What is the capital of Alaska?",
+                            answers: ["Juno", "Seattle", "Sacramento", "Albany"],
+                            key: 0
+                        },
+                        {
+                            question: "What is the capital of California?",
+                            answers: ["Juno", "Seattle", "Sacramento", "Albany"],
+                            key: 2
+                        }
+                    ]
+                },
+                {
+                    set: "Chemistry"
+                }
+            ]
+            // Add Question Sets
+            FillSet()
+
+            // Add Questions to List on Right
+            $( ".question-set-item" ).on( "click", function(e) {
+                console.log('clic')
+                var index = e.target.getAttribute('data-index')
+                console.log(questions)
+                console.log(index)
+                FillQuestions(index);
+            });
+            // $('').on('click',(function (e) {
+                
+            // });
+            $('#set-okay').click(function (e) {
+                questions.push({
+                    set: $('#set-input').val(),
+                    questions:[],
+                })
+                $('#set-input').val('')
+                FillSet()
+            })
+
+            function FillSet() {
+                
+                for (var index in questions) {
+                $('#questions-set-list').append('<li id="question-set-item-'+index+'" data-index=' + index +
+                    ' class="list-group-item question-set-item">' + questions[index].set + '</li>')
+            }
+            }
+
+            function FillQuestions(index) {
+                $('#accordianId').html('')
+                var question = questions[index];
+                $('#questions-header').html(question.set)
+                for (var i in question.questions) {
+                    // ADD A DROP DOWN LIST PER QUESTION
+                    var questionCardItem = '<div class="card">' +
+                        '<div class="card-header card-title-header" role="tab" id="section' + i + 'HeaderId">' +
+                        '<h5 class="mb-0">' +
+                        '<a data-toggle="collapse" data-parent="#accordianId" href="#section' + i +
+                        'ContentId"' +
+                        'aria-expanded="true" aria-controls="section' + i + 'ContentId">' +
+                        question.questions[i].question +
+                        '</a>' +
+                        '</h5>' +
+                        '</div>' +
+                        '<div id="section' + i + 'ContentId" class="collapse in" role="tabpanel"' +
+                        'aria-labelledby="section1HeaderId">' +
+                        '<ul id="list-group-' + i + '" class="list-group">' +
+                        '</ul>' +
+                        '</div>' +
+                        '</div>'
+
+                    $('#accordianId').append(questionCardItem)
+                }
+                // Add questions to Accordian List
+                for (var item in question.questions) {
+                    for (var answer in question.questions[item].answers) {
+                        $('#list-group-' + item).append('<li class="list-group-item question-set-item">' +
+                            question.questions[item].answers[answer] + '</li>')
+                    }
+                }
+            }
+
+            $('#set-cancel').click(function(e) {
+                $('#set-input').val('')
+            })
+        });
+    </script>
+</body>
+
+</html>

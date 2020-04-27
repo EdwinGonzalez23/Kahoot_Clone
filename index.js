@@ -331,7 +331,9 @@ express.post('/host-login', function (req, res, next) {
 //express.get('/loginhost',function(req,res){
 //        return res.sendFile(__dirname + "/loginhost.html");
 //        })
-
+express.get('/test',function(req,res){
+    return res.sendFile(__dirname + '/test.html');
+})
 express.get('/createquestions',function(req,res){
     if(!req.session.user){
         return res.redirect('host');
@@ -361,6 +363,22 @@ express.get('/addquestion/*',function(req,res){
         return res.redirect('host');
     }
     return res.sendFile(__dirname + '/addquestion.html');
+})
+express.get('/sendquestions',function(req,res){
+    return res.sendFile(__dirname + '/sendquestions.html');
+})
+express.post('/insertquestions',function(req,res){
+    //assume we have login
+    console.log(req.body);
+    var dbobjs = req.body;
+    var mcollection = "capitals"
+    var dbname = 'mcgame'
+    exports.insertManyToOne(mcollection,dbname,dbobjs,function(res){
+        if(res){
+            console.log(res);
+        }
+    })
+    //exports.insertManyToOne = function(collection,dbname,objs,callback){
 })
 function makeid(){
     const length = 24;
@@ -428,14 +446,25 @@ express.post('/updateonerec',function(req,res){
     var mdb= req.body.whichdb;
     var myqkey = req.body.findkey;
     var myqvalue= req.body.findvalue;
-    var mq = {myqkey:myqvalue};
+    //var mq = {myqkey:myqvalue};
+    var mq = []
+    mq.push({
+        key: myqkey,
+        value: myqvalue
+    });
     var arraykey = req.body.arrkey;
     var arrayvalue = req.body.arrlist;
     if(Array.isArray(arrayvalue)){
-        var updateval = {$addToSet:{arraykey:{$each: arrayvalue}}};    
+        var updateval = {$addToSet:{arraykey:{$each: arrayvalue}}};//i dont think this works
     }
     else {
-        var updateval = { $addToSet: { arraykey: arrayvalue } };
+        //var updateval = { $addToSet: { arraykey: arrayvalue } };
+        var addtoarray = []
+        addtoarray.push({
+            key: arraykey,
+            value: arrayvalue
+        });
+        var updateval = {$addToSet: {addtoarray}};
     }
     exports.updateRecordArray(mcollection,mdb,mq,updateval,function(result){
         //console.log(result);
@@ -552,4 +581,19 @@ exports.insertRecord = function(collection,dbname,updatearray,callback){
         });
     })
 };
+exports.insertManyToOne = function(collection,dbname,objs,callback){
+    MongoClient.connect(url,function(err, client){
+        var dbo = client.db(dbname);
+        dbo.collection(collection).insertMany(objs,function(err,res){
+            if(err){
+                console.log("error with insert many");
+                console.log(err);
+            }
+            else{
+                callback(res);
+                client.close();
+            }
+        });
+    });
+}
 // end alex add
