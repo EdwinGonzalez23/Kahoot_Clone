@@ -10,6 +10,8 @@ var upload = multer();
 var session = require('express-session');
 var cookieParser = require('cookie-parser');
 //some new things I'll need
+//const request = require('request');depricated no longer active, it still installs and works but get warning
+const axios = require('axios');
 var mon = require('mongoose');
 //express.engine('html',require('ejs').renderFile);
 //
@@ -427,7 +429,7 @@ express.get('/getcollections',function(req, res){
     }
 })
 //express.get('/addquestiontoset')
-/*express.get('/updateonerec',function(req,res){//for testing delete if necessary
+/*express.get('/updateonerec',function(req,res){//dont delete this yes
     var myfuparray = ['this is one','this is two','this is four','this is five'];
     var mcollection= 'mydocs';
     var mdb= 'testupdate';
@@ -441,17 +443,18 @@ express.get('/getcollections',function(req, res){
     });
     res.redirect('/host');
 })*/
-express.post('/updateonerec',function(req,res){
+express.post('/updateonerec',function(req,res){// this doesn't work gonna do hardcoded values
     var mcollection= req.body.collectionname;
     var mdb= req.body.whichdb;
     var myqkey = req.body.findkey;
     var myqvalue= req.body.findvalue;
     //var mq = {myqkey:myqvalue};
     var mq = []
-    mq.push({
-        key: myqkey,
-        value: myqvalue
-    });
+    //mq.push({
+    //    key: myqkey,
+    //    value: myqvalue
+    //});
+    mq[myqkey] = myqvalue;
     var arraykey = req.body.arrkey;
     var arrayvalue = req.body.arrlist;
     if(Array.isArray(arrayvalue)){
@@ -460,14 +463,36 @@ express.post('/updateonerec',function(req,res){
     else {
         //var updateval = { $addToSet: { arraykey: arrayvalue } };
         var addtoarray = []
-        addtoarray.push({
-            key: arraykey,
-            value: arrayvalue
-        });
+        //addtoarray.push({
+        //    key: arraykey,
+        //    value: arrayvalue
+        //});
+        addtoarray[arraykey] = arrayvalue;
         var updateval = {$addToSet: {addtoarray}};
     }
     exports.updateRecordArray(mcollection,mdb,mq,updateval,function(result){
         //console.log(result);
+    });
+    res.redirect('/host');
+});
+express.post('/updateuserrec',function(req,res){// hardcoded values collections should have been an var now hard coded
+    console.log(req.body);
+    var mcollection= req.body.collectionname;
+    var mdb= req.body.whichdb;
+    //var myqkey = req.body.findkey;
+    var myqvalue= req.body.findvalue;
+    var mq = {userdocumentid:myqvalue};
+    //var arraykey = req.body.arrkey;
+    var arrayvalue = req.body.arrlist;//misleading it's almost always one value
+    if(Array.isArray(arrayvalue)){
+        var updateval = {$addToSet:{'collections':{$each: arrayvalue}}};//i dont think this works
+    }
+    else {
+        //addtoarray[arraykey] = arrayvalue;
+        var updateval = {$addToSet: {'collections': arrayvalue}};
+    }
+    exports.updateRecordArray(mcollection,mdb,mq,updateval,function(result){
+        //console.log(result);var updateval = {$addToSet:{'somearr':{$each: myfuparray}}};
     });
     res.redirect('/host');
 });
@@ -492,6 +517,19 @@ express.post('/insertquestion',function(req,res){
     
     exports.insertRecord(mcollection,mdb,insertval,function(result){
         //console.log(result);
+        const data = {
+            collectionname : 'my_collections',
+            whichdb : mdb,
+            findkey : 'userdocumentid',
+            findvalue : req.session.user.documentid,
+            arrkey : 'collections',
+            arrlist : mcollection
+        };
+        axios.post('http://localhost:3000/updateuserrec',data).then(res=>{
+            //console.log(res);
+        }).catch(error =>{
+            //console.log(error);
+        })
     });
     res.redirect('/host');
 });
