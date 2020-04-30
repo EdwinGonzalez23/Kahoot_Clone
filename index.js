@@ -11,7 +11,7 @@ var session = require('express-session');
 var cookieParser = require('cookie-parser');
 //some new things I'll need
 //const request = require('request');depricated no longer active, it still installs and works but get warning
-const axios = require('axios');
+const axios = require('axios').default;
 var mon = require('mongoose');
 //express.engine('html',require('ejs').renderFile);
 //
@@ -276,6 +276,30 @@ express.get('/idRequest', function (req, res) {
 // Also added a socket message  higher up
 // End Joey Add
 // alex starts here
+//select question set added recently
+express.get('/selectquestionset',(req,res)=>{
+    if(!req.session.user){
+        res.redirect('/create');
+    }
+    else
+    {
+        res.sendFile(__dirname + '/selectquestionset.html');
+    }
+});
+express.post('/setquestionset',function(req,res){
+    if(req.session.user){
+    var questionset = req.body.doc;
+    questionset = 'test_questions';
+    exports.getallindoc(questionset,'mcgame',function(docs){
+        questions = docs;
+        //console.log(questions);
+        res.end();
+    });
+    }
+    res.redirect('/create');
+    
+    
+})
 express.get('/createuser',function(req, res){//used for creating host user
     res.sendFile(__dirname +'/createuser.html')
 });
@@ -395,11 +419,12 @@ function makeid(){
 }
 express.get('/getquestions',function(req, res){
     if(!req.session.user){
+        console.log("you are not logged in!!");
         return res.redirect('/host');
     }
     var collection = req.query['collection']
     exports.getallindoc(collection,'mcgame',function(docs){
-        res.jsonp(docs);
+        return res.jsonp(docs);
     });
     //res.jsonp(collection);
     //res.jsonp("not yet implemented");
