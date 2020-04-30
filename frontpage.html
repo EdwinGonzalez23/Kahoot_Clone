@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Luckiest+Guy&display=swap" rel="stylesheet">
+
+
+    <style>
+        body {
+            background-color: #00bfff;
+            font-family: 'Luckiest Guy', cursive;
+        }
+    </style>
+
+    <title>Score Board</title>
+
+
+</head>
+
+<body class="py-5">
+
+    <div class="container-fluid text-center py-5 text-white">
+        <h1 class="display-1">Welcome to Group 3 Kahoot Clone!</h1>
+        <div class="row py-5">
+            <div class="col text-center">
+                <h1 class="display-3">Edwin Gonzalez</h1>
+                <h1 class="display-3">Alejandro Hernandez</h1>
+            </div>
+            <div class="col text-center">
+                <h1 class="display-3">Joseph Shafer</h1>
+                <h1 class="display-3">Loay Samha</h1>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid row text-center text-white">
+        <div class="col">
+            <h1>Host</h1>
+            <button id="host-btn" type="button" class="btn btn-warning btn-lg">Login</button>
+        </div>
+        <div class="col">
+            <h1>Player</h1>
+            <button id="player-btn" type="button" class="btn btn-warning btn-lg">Login</button>
+        </div>
+    </div>
+
+    <div class="container-fluid text-center py-5 text-white">
+        <h1>Player Pin: 1234</h1>
+    </div>
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+
+    <script>   
+
+    $(document).ready(function () {
+        $("#host-btn").click(function (){
+            $.get("/send-to-host", function(url){
+                window.location.replace(url)
+            })
+        })
+
+        $("#player-btn").click(function (){
+            $.get("/send-to-player", function(url){
+                window.location.replace(url)
+            })
+        })
+    
+    })
+
+   
+
+    </script>
+</body>
+
+</html>
