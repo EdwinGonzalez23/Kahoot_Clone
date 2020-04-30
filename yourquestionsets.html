@@ -149,22 +149,23 @@
               var btntext = $(this).text();
               btntext.replace(/ /g,"_");
               if(btntext.indexOf("new") > -1){
-                window.location = "/addnewquestion";
+                window.location = "/addquestion";
               }
-              else{
-                  window.location = "/addquestion/" + btntext;
-              }
+              //else{
+                //  window.location = "/addquestion/" + btntext;
+              //}
           });
           function redirect() {//$(":button").click(function () {
               console.log($(this).text());
               var btntext = $(this).text();
               btntext = btntext.replace(/ /g,"_");
-              if(btntext.indexOf("new") > -1){
-                window.location = "/addnewquestion";
-              }
-              else{
+              //if(btntext.indexOf("new") > -1){
+            //    window.location = "/addnewquestion";
+              //}
+             // else{
+            //      window.location = "/addquestion/" + btntext;
+              //}
                   window.location = "/addquestion/" + btntext;
-              }
           };
             
       </script>

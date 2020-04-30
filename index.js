@@ -384,6 +384,12 @@ express.post('/savequestionset',function(req,res){
 
     //}
 });
+express.get('/addquestion',function(req,res){
+    if(!req.session.user){
+        return res.redirect('host');
+    }
+    return res.sendFile(__dirname + '/addquestion.html');
+})
 express.get('/addquestion/*',function(req,res){
     if(!req.session.user){
         return res.redirect('host');
