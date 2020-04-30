@@ -1,38 +1,102 @@
+Skip to content
+Search or jump to…
+
+Pull requests
+Issues
+Marketplace
+Explore
+ 
+@EdwinGonzalez23 
+EdwinGonzalez23
+/
+Kahoot_Clone
+1
+00
+ Code
+ Issues 0
+ Pull requests 0 Actions
+ Projects 0
+ Wiki
+ Security 1
+ Insights
+ Settings
+Kahoot_Clone/hostStartButton.html
+@JosephShafer JosephShafer fixed small score bug"
+6543815 4 days ago
+We found a potential security vulnerability in one of your dependencies.
+Only the owner of this repository can see this message.
+
+63 lines (43 sloc)  1.81 KB
+  
 <!doctype html>
 <html lang="en">
-  <head>
-    <title></title>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-  </head>
-  <body>
-      <div id="accordianId" role="tablist" aria-multiselectable="true">
-          <div class="card card-title-header">
-              <div class="card-header" role="tab" id="section1HeaderId">
-                  <h5 class="mb-0">
-                      <a data-toggle="collapse" data-parent="#accordianId" href="#section1ContentId" aria-expanded="true" aria-controls="section1ContentId">
-                Section 1
-              </a>
-                  </h5>
-              </div>
-              <div id="section1ContentId" class="collapse in" role="tabpanel" aria-labelledby="section1HeaderId">
-                <ul class="list-group">
-                    <li class="list-group-item">Juno</li>
-                    <li class="list-group-item">Juno</li>
-                    <li class="list-group-item">Juno</li>
-                    <li class="list-group-item">Juno</li>
-                </ul>
-              </div>
-          </div>
-      </div>
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-  </body>
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+
+  <title>Kahoot Questions</title>
+</head>
+
+<body>
+
+    <div class="container-fluid text-center py-5">
+        <button class="btn startgame">
+            Redirect Players to Questions
+        </button>
+
+        <button class="btn sendquestions">
+          Send Questions
+        </button>
+
+    </div>
+
+
+
+
+      <!-- Optional JavaScript -->
+      <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+      <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+
+      <script>
+           var socket = io();
+
+           $(".startgame").click(function () {
+              socket.emit('startGame');
+              console.log("Start function ran");
+           });
+
+           $(".sendquestions").click(function () {
+             console.log("Clicked");
+            $.get("/sendQuestionsFromHost", function (data) {});
+           });
+      </script>
+</body>
+
 </html>
+© 2020 GitHub, Inc.
+Terms
+Privacy
+Security
+Status
+Help
+Contact GitHub
+Pricing
+API
+Training
+Blog
+About
+Found 7 out of 7 items

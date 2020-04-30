@@ -126,6 +126,9 @@
                                     data-target="#exampleModal2" style="height: 45px;">
                                     Add New Question
                                 </button>
+                                <button id="btn-start-game" type="button" class="btn btn-primary card-title-header" style="height: 45px;">
+                                    Start Game
+                                </button>
                             </div>
                             <!-- Modal -->
                             <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog"
@@ -196,8 +199,15 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
     </script>
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
     <script>
         $(document).ready(function () {
+            var socket = io();
+
+           $("#btn-start-game").click(function () {
+              //socket.emit('startGame');
+              console.log("Start function ran");
+           });
             var setIndex;
             var questions = [{
                     set: "Geography",
@@ -317,7 +327,11 @@
                 }
                 questions[setIndex].questions.push(newQuestion)
                 FillQuestions(setIndex)
-            }) 
+            })
+
+            $('#btn-start-game').on('click', function() {
+
+            })
         });
     </script>
 </body>
