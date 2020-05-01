@@ -107,7 +107,7 @@ express.get('/host', function (req, res) {
 // Host Logout Form Submit
 express.get('/host-logout', function (req, res) {
         req.session.destroy(function () {
-                console.log('user logged out')
+                //console.log('user logged out')
                 })
         res.redirect('/host')
         })
@@ -153,7 +153,7 @@ MongoClient.connect(url, function (err, db) {
 // Host Create Game Screen
 express.get('/create', function (req, res) {
         if (req.session.user) {
-        res.sendFile(__dirname + '/create.html')
+        res.sendFile(__dirname + '/hostmenu.html')
         } else {
         res.redirect('/host')
         }
