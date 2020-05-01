@@ -10,6 +10,18 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
     integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
+  <style>
+    body {
+      background-color: #1098c5;
+    }
+
+    .btn-lg {
+      padding: 10px 16px;
+      font-size: 40px;
+      line-height: 2;
+      border-radius: 6px;
+    }
+  </style>
 
   <title>Kahoot Questions</title>
 </head>
@@ -17,7 +29,7 @@
 <body>
 
 
-  <div class="container-fluid">
+  <div class="container-fluid ">
     <div class="row">
       <div class="col text-center">
         <h2>Time Left</h2>
@@ -34,15 +46,19 @@
         </div>
       </div>
       <div class="col text-center">
-        <h2>Answers</h2>
-        <h2>0</h2>
+        <h2>Players Answered</h2>
+        <h2 class="numAnswers">0</h2>
       </div>
     </div>
 
   </div>
 
+  <div class="text-center">
+    <h1 id='thisPlayerScore'>Score</h1>
+  </div>
 
-  <div class="container-fluid py-5">
+
+  <div class="container-fluid bg-dark py-5 fixed-bottom">
     <div class="row">
 
       <div class="col justify-content-center">
@@ -81,18 +97,16 @@
       <script>
 
         var socket = io();
-        var answerJSON = {id: "", answer: -1, time: 0 }
-        
+        var answerJSON = { id: "", answer: -1, time: 0, submitNumber: 0 }
 
-        $( document ).ready(function() {
+
+        $(document).ready(function () {
           $.get("/idRequest", function (data) {
-          let requestData = JSON.parse(data);
-          //console.log("Requested ID: " + requestData['id']);
-          answerJSON['id'] = requestData['id'];
-          //console.log(answerJSON);
+            let requestData = JSON.parse(data);
+            answerJSON['id'] = requestData['id'];
+          });
         });
-      });
- 
+
 
         $(":button").click(function () {
           let buttonid = this.id;
@@ -112,16 +126,22 @@
 
           answerJSON['answer'] = chosenAnswer;
           answerJSON['time'] = parseInt($("#timer").html());
+          answerJSON['submitNumber'] += 1
 
-          //console.log(answerJSON);
-
+          $.post('playerAnswer', answerJSON, function (res) {
+            console.log(res);
+          })
         })
 
 
-        // might be better to just have a request
-        // to start timer
+
         socket.on('timer', function (time) {
           $('#timer').html(time);
+        })
+
+        socket.on('numPlayerAnswers', function (numberAnsweredQuestions) {
+          console.log(numberAnsweredQuestions);
+          $('.numAnswers').html(numberAnsweredQuestions);
         })
 
         // todo add a request the first time 
@@ -132,13 +152,29 @@
           socket.emit('answerJSON', JSON.stringify(answerJSON));
 
 
+          answerJSON['answer'] = -1;
+          answerJSON['time'] = 0;
+          answerJSON['submitNumber'] = 0;
+
           $("#question-text").html(question['Q']);
           $("#answer-1").html(question['a1']);
           $("#answer-2").html(question['a2']);
           $("#answer-3").html(question['a3']);
           $("#answer-4").html(question['a4']);
+          $('.numAnswers').html(0);
+
+          $.post('/get-score', answerJSON, function(thisScore){
+            console.log(thisScore);
+            $("#thisPlayerScore").html(`Score ${thisScore}`);
+          })
 
         })
+
+        
+
+        socket.on('go-to-scoreboard', function (route) {
+          window.location.replace(route);
+        });
 
 
 

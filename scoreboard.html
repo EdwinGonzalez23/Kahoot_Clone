@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <style>
+        body {
+            background-color: #1098c5;
+        }
+
+        .bg-secondary {
+            background-color: #f7f700 !important;
+        }
+    </style>
+
+    <title>Score Board</title>
+
+
+</head>
+
+<body>
+    <div>
+        <nav class="navbar navbar-dark bg-dark py-3 text-center">
+            <div class="mx-auto">
+                <h3 class="justify-content-center text-center text-white">
+                    Scoreboard
+                    <h3>
+            </div>
+        </nav>
+
+    </div>
+
+    <div class="container text-center py-5">
+        <div class="player-score-cards">
+
+        </div>
+    </div>
+
+
+
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+
+    <script>
+
+
+
+        //console.log(idCheck());
+
+        $(document).ready(function () {
+            let string = 'bg-success'
+            let thisPlayerID = '';
+
+            $.get("/scoreboard-score-get", function (data) {
+                let requestData = JSON.parse(data);
+                console.log(requestData);
+
+                requestData.sort(function (a, b) {
+                    return b['score'] - a['score'];
+                });
+
+                // Going to change color of player card
+                for (var i = 0; i < requestData.length; i++) {
+                    $(".player-score-cards").append(
+                        `
+                        <div class="card ${requestData[i]['id']} my-2">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <h3 class="text-left">
+                                        ${requestData[i]['name']}                                   
+                                    </h3>
+                             
+                                    <h3 class="text-right">
+                                        ${requestData[i]['score']}                       
+                                    </h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                `
+                    );
+
+
+                    $.get("/idRequest", function (data) {
+                        let thisPlayerID = JSON.parse(data);
+                        if($(".card").hasClass(thisPlayerID['id'])){
+                            console.log(thisPlayerID['id']);
+                            $(`.${thisPlayerID['id']}`).addClass("bg-secondary");
+                        }
+                    });
+
+
+
+                };
+
+            });
+
+        })
+
+        //${idCheck() == requestData[i]['id'] ? 'bg-secondary' : 'bg-light'}
+    </script>
+</body>
+
+</html>
