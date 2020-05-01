@@ -100,7 +100,7 @@
                                             <div class="modal-footer">
                                                 <button id="set-cancel" type="button" class="btn btn-secondary"
                                                     data-dismiss="modal">Cancel</button>
-                                                <button id="set-okay" type="button" class="btn btn-primary">Okay</button>
+                                                <button id="set-okay" type="button" class="btn btn-primary">Okays</button>
                                             </div>
                                         </div>
                                     </div>
@@ -240,6 +240,7 @@
             
             // Okay Button Hit (Add Question Set)
             $('#set-okay').on('click', function (e) {
+                //debugger;
                 questions.push({
                     set: $('#set-input').val(),
                     questions:[],
@@ -247,10 +248,15 @@
                 $('#set-input').val('')
                 // ADD EVENT LISTENERS 
                 document.getElementById("questions-set-list").addEventListener("click",function(e) {
-                if(e.target && e.target.nodeName == "LI") {
-                    var index = e.target.getAttribute('data-index')
-                    setIndex = index
-                    var newQuestion = {
+                    if(e.target && e.target.nodeName == "LI") {
+                        var index = e.target.getAttribute('data-index')
+                        setIndex = index
+                        setIndex = e.target.getAttribute('data-index')
+                        FillQuestions(setIndex);
+                    }
+                })
+                var len = questions.length
+                var newQuestion = {
                     question: $('#question-input').val(),
                     answers: [
                         $('#answer-input1').val(), 
@@ -260,10 +266,9 @@
                     ],
                     key: $('input[name=answerindex]:checked', '#set-form').val()
                 }
-                questions[setIndex].questions.push(newQuestion)
-                    FillQuestions(index);
-                }
-                });
+                questions[len-1].questions.push(newQuestion)
+                //FillQuestions();
+                console.log('yo')
                 FillSet()
             })
 
@@ -325,6 +330,8 @@
                     ],
                     key: $('input[name=answerindex]:checked', '#question-form').val()
                 }
+                //debugger;
+                console.log(setIndex)
                 questions[setIndex].questions.push(newQuestion)
                 FillQuestions(setIndex)
             })
