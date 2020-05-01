@@ -260,9 +260,6 @@ var questionNumber = -1;
 
 express.get('/sendQuestionsFromHost', function (req, res) {
 
-
-express.get('/sendQuestionsFromHost', function (req, res) {
-    
   if (gameStart === false) {
     console.log("Host Started Game");
     gameStart = true;
