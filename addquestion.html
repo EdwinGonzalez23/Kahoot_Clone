@@ -60,9 +60,11 @@
                 var currentwindow = window.location;
                 var pname = currentwindow.pathname;
                 var mytag = pname.substr(pname.lastIndexOf('/')+1,pname.length);
-                //console.print(mytag);
                 document.getElementById('collectionname').value = mytag;
-                
+                if(mytag.lastIndexOf('addquestion') > -1){
+                   document.getElementById('collectionname').readOnly = false;
+                    document.getElementById('collectionname').value = "name your question set HERE";
+                }
             }
             );
         </script>
