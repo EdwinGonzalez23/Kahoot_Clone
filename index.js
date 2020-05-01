@@ -259,13 +259,14 @@ var questionNumber = -1;
 
 
 express.get('/sendQuestionsFromHost', function (req, res) {
-
   if (gameStart === false) {
+    io.emit('ask-to-start-game', 'game');
     console.log("Host Started Game");
     gameStart = true;
     gameLoop();
   }
-  res.end();
+  res.redirect('/host-game');
+  //res.end();
 })
 
 express.get('/game', function (req, res) {
@@ -493,6 +494,12 @@ express.post('/savequestionset',function(req,res){
 
     //}
 });
+express.get('/test', function(req,res) {
+  return res.sendFile(__dirname + '/test.html');
+})
+express.get('/host-game', function (req, res) {  
+  return res.sendfile(__dirname + '/host-game.html')
+})
 express.get('/addquestion/*',function(req,res){
     if(!req.session.user){
         return res.redirect('host');

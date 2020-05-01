@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+  <style>
+    body {
+      background-color: #1098c5;
+    }
+
+    .btn-lg {
+      padding: 10px 16px;
+      font-size: 40px;
+      line-height: 2;
+      border-radius: 6px;
+    }
+  </style>
+
+  <title>Kahoot Questions</title>
+</head>
+
+<body>
+
+
+  <div class="container-fluid ">
+    <div class="row">
+      <div class="col text-center">
+        <h2>Time Left</h2>
+        <!-- <img class="rounded-circle" alt="100x100" src="https://placehold.it/100x100" data-holder-rendered="true"> -->
+        <div>
+          <h2 id="timer"></h2>
+        </div>
+      </div>
+      <div class="col-8 text-center">
+        <div class="jumbotron ">
+          <h1>Question</h1>
+          <div class="w-100 mb-1"></div>
+          <p id="question-text"> Waiting for host to start the game </p>
+        </div>
+      </div>
+      <div class="col text-center">
+        <h2>Players Answered</h2>
+        <h2 class="numAnswers">0</h2>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="text-center">
+    <h1 id='thisPlayerScore'>Score</h1>
+  </div>
+
+      <!-- Optional JavaScript -->
+      <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+      <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+
+      <script>
+
+        var socket = io();
+        var answerJSON = { id: "", answer: -1, time: 0, submitNumber: 0 }
+
+
+        $(document).ready(function () {
+          $.get("/idRequest", function (data) {
+            let requestData = JSON.parse(data);
+            answerJSON['id'] = requestData['id'];
+          });
+        });
+
+
+        $(":button").click(function () {
+          let buttonid = this.id;
+          let chosenAnswer = 0;
+          if (buttonid === "answer-1") {
+            chosenAnswer = 0;
+          }
+          if (buttonid === "answer-2") {
+            chosenAnswer = 1;
+          }
+          if (buttonid === "answer-3") {
+            chosenAnswer = 2;
+          }
+          if (buttonid === "answer-4") {
+            chosenAnswer = 3;
+          }
+
+          answerJSON['answer'] = chosenAnswer;
+          answerJSON['time'] = parseInt($("#timer").html());
+          answerJSON['submitNumber'] += 1
+
+          $.post('playerAnswer', answerJSON, function (res) {
+            console.log(res);
+          })
+        })
+
+
+
+        socket.on('timer', function (time) {
+          $('#timer').html(time);
+        })
+
+        socket.on('numPlayerAnswers', function (numberAnsweredQuestions) {
+          console.log(numberAnsweredQuestions);
+          $('.numAnswers').html(numberAnsweredQuestions);
+        })
+
+        // todo add a request the first time 
+        // client starts page so they'll get current question
+
+        socket.on('question', function (question) {
+
+          socket.emit('answerJSON', JSON.stringify(answerJSON));
+
+
+          answerJSON['answer'] = -1;
+          answerJSON['time'] = 0;
+          answerJSON['submitNumber'] = 0;
+
+          $("#question-text").html(question['Q']);
+          $("#answer-1").html(question['a1']);
+          $("#answer-2").html(question['a2']);
+          $("#answer-3").html(question['a3']);
+          $("#answer-4").html(question['a4']);
+          $('.numAnswers').html(0);
+
+          $.post('/get-score', answerJSON, function(thisScore){
+            console.log(thisScore);
+            $("#thisPlayerScore").html(`Score ${thisScore}`);
+          })
+
+        })
+
+        
+
+        socket.on('go-to-scoreboard', function (route) {
+          window.location.replace(route);
+        });
+
+
+
+      </script>
+</body>
+
+</html>
