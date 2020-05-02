@@ -241,6 +241,7 @@
                 setIndex = e.target.getAttribute('data-index')
                 console.log(setIndex)
                 FillQuestions(setIndex);
+                SetQuestionSet(questions[setIndex].set)
             });
             
             // Okay Button Hit (Add Question Set)
@@ -345,6 +346,11 @@
                 socket.emit('startGame');
                 console.log('emitting')
             })
+
+            function SetQuestionSet(str) {
+                var qset = '_' + str
+                console.log(qset)
+            }
         });
     </script>
 </body>
