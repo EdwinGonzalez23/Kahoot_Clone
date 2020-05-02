@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    
+  <title>Your Kahoot Questions</title>
+    <style>
+        .array-content {
+            margin-left: 15%;
+            margin-right: 15%;
+            margin-top: 0%;
+            color: white;
+            font-family: 'Luckiest Guy', cursive;
+            font-size: 30px;
+        }
+        
+        
+    </style>
+</head>
+
+<body>
+
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col text-center">
+        <h2></h2>
+        <!-- <img class="rounded-circle" alt="100x100" src="https://placehold.it/100x100" data-holder-rendered="true"> -->
+        <div>
+          <h2 id="timer"></h2>
+        </div>
+      </div>
+      <div class="col-8 text-center">
+        <div>
+          <h1>Question</h1>
+          <div class="w-100 mb-1"></div>
+          <p id="question-text"> Choose a question set to start </p>
+        </div>
+      </div>
+      <div class="col text-center">
+        <h2></h2>
+        <h2></h2>
+      </div>
+    </div>
+
+  </div>
+
+
+  <div class="container-fluid">
+    
+    <div id="my-buttons" class="array-content">
+        <!--
+        <button id="answer-1" type="button" class="btn btn-primary btn-block btn-lg">test questions</button>  
+        
+        <button id="answer-2" type="button" class="btn btn-primary btn-block btn-lg">Answer 2</button>
+        <button id="answer-3" type="button" class="btn btn-primary btn-block btn-lg">Answer 3</button>
+        <button id="answer-4" type="button" class="btn btn-primary btn-block btn-lg">Answer 4</button>
+        -->
+        <div id="new_button"></div>
+        
+    </div>  
+      
+      </div>
+    
+
+
+
+
+      <!-- Optional JavaScript -->
+      <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+      <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+
+      <script>
+          //so much wrong will follow
+        //var socket = io();
+        //var answerJSON = {id: "", answer: -1, time: 0 }
+        //var mydocuments = [];
+        //var mydocid = "<%=docid%>"
+          //var mydocid = "";
+        
+
+        $( document ).ready(function() {//to query my question set
+          $.get("/getcollections", function (data) {
+          //let requestData = JSON.parse(data);
+          //console.log("Requested ID: " + requestData['id']);
+          //answerJSON['id'] = requestData['id'];
+           console.log(data);
+           //let requestdata = JSON.parse(data);
+           //console.log(requestdata);
+          //console.log(answerJSON);
+            console.log(data);
+            var myrqdata = JSON.parse(data);
+            console.log(myrqdata[0]);
+              updatedata(myrqdata);
+            //var container = document.getElementById("testoutput");
+            //var newlabel = document.createElement("label");
+            //newlabel.type = "text";
+            //newlabel.name = "question" + counter;
+            //var cc= counter+1;
+            //newlabel.innerHTML = "help";
+            //container.appendChild(newlabel);
+              
+              
+        });
+      });
+          function updatedata(arr){
+              for(var i = 0; i < arr.length; i++){
+            var container = document.getElementById("new_button");
+            var newbtn = document.createElement("button");
+            var t = document.createTextNode(arr[i].replace(/_/g," "));
+            //var t = document.createTextNode(arr[i]);
+              newbtn.appendChild(t);
+            newbtn.type = "button";
+            newbtn.classList.add("btn");
+            newbtn.classList.add("btn-primary");
+            newbtn.classList.add("btn-block");
+            newbtn.classList.add("btn-lg");
+            //newbtn.addEventListener(onclick,redirect);
+            //newbtn.onclick = function(){
+            //    var btntext = arr[i];
+                //btntext = btntext.replace(/ /g,"_");
+                //window.location = "/addquestion/" + btntext;
+            //    window.location = "/addquestion/" + t.text;// + arr[i];
+            //    alert(btntext);
+            //};
+            newbtn.onclick = selectquestions;
+            container.appendChild(newbtn);
+              }
+          }
+          
+          function selectquestions() {//$(":button").click(function () {
+              console.log($(this).text());
+              var btntext = $(this).text();
+              btntext = btntext.replace(/ /g,"_");
+              $.post("/setquestionset",{doc:btntext},function(){
+                  window.location = "/create";
+              })
+                
+              
+          };
+            
+      </script>
+</body>
+
+</html>

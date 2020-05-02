@@ -10,6 +10,7 @@ var upload = multer();
 var session = require('express-session');
 var cookieParser = require('cookie-parser');
 //some new things I'll need
+const axios = require('axios').default;
 var mon = require('mongoose');
 //express.engine('html',require('ejs').renderFile);
 //
@@ -114,48 +115,11 @@ express.get('/host-logout', function (req, res) {
         res.redirect('/host')
         })
 
-// Host Login Form Submit
-/*
-express.post('/host-login', function (req, res) {
-        if (!req.body.Name || !req.body.Password || !req.body.Id) {
-        // Redirect to an error page or same login page
-        } else {
-        var query = {
-id: Number(req.body.Id),
-password: Number(req.body.Password)
-}
 
-// Comment this out for now Mongo
-MongoClient.connect(url, function (err, db) {
-    if (err) throw err;
-    var dbo = db.db("kahoot");
-    dbo.collection("user").findOne(query, function (err, result) {
-            if (err) throw err
-            if (result == null) {
-            return res.redirect('/host')
-            } else if (result != null) {
-            db.close();
-            req.session.user = result.Id
-            console.log('looged in as ')
-            console.log(result)
-            return res.redirect('/create')
-            }
-            });
-    })
-// for (var key in users) {
-//   if (users[key].id == req.body.Id && users[key].password == req.body.Password) {
-//     req.session.user = users[key]
-//     return res.redirect('/create')
-//   }
-// }
-// return res.redirect('/host') // Failed Login
-}
-})
-*/
 // Host Create Game Screen
 express.get('/create', function (req, res) {
         if (req.session.user) {
-        res.sendFile(__dirname + '/create.html')
+        res.sendFile(__dirname + '/hostmenu.html')
         } else {
         res.redirect('/host')
         }
@@ -411,6 +375,30 @@ function gameLoop() {
 // Also added a socket message  higher up
 // End Joey Add
 // alex starts here
+//select question set added
+express.get('/selectquestionset',(req,res)=>{
+    if(!req.session.user){
+        res.redirect('/create');
+    }
+    else
+    {
+        res.sendFile(__dirname + '/selectquestionset.html');
+    }
+});
+express.post('/setquestionset',function(req,res){
+    if(req.session.user){
+    var questionset = req.body.doc;
+    //questionset = 'test_questions';
+    exports.getallindoc(questionset,'mcgame',function(docs){
+        questions = docs;
+        //console.log(questions);
+        res.end();
+    });
+    }
+    res.redirect('/create');
+    
+    
+})
 express.get('/createuser',function(req, res){//used for creating host user
     res.sendFile(__dirname +'/createuser.html')
 });
@@ -421,7 +409,6 @@ express.post('/host/makenewhost',(req,res,next)=>{
     var user = new User({
         username : req.body.username,
         password : req.body.password,
-//documentid : 'laksjgiqregianrt76452634',
         documentid : d_id,
 });
     User.create(user,function(err,user){
@@ -430,21 +417,15 @@ express.post('/host/makenewhost',(req,res,next)=>{
             return next(err);
         }
         else{
-            //console.log("did we make it here?")
-            //console.log(user._id);
-            //return res.sendFile(__dirname + '/loginhost.html');
+
         }
     });
-    //return res.sendFile(__dirname +'/loginhost.html');
-    //mon.close();
+    
     res.redirect('/host');
 
 });
 express.post('/host-login', function (req, res, next) {
-    
-    //console.log("trying to authenticate: this got called");
-    //console.log(req.body.username);
-    //console.log(req.body.password);
+
     mon.connect(dburl);
     if (req.body.username && req.body.password) {
         User.authenticate(req.body.username, req.body.password, function (err, user) {
@@ -453,22 +434,19 @@ express.post('/host-login', function (req, res, next) {
                 return next(err);
             }
             else {
-                //console.log(user.documentid);
-                //req.session.documentid = user.documentid;
-                //console.log(req.session.documentid);
+                
                 req.session.user = user;
-                //return res.redirect("you are logged in");
-                //mon.close();
+                
                 return res.redirect('/host');
             }
         })
     }
 });
 
-//express.get('/loginhost',function(req,res){
-//        return res.sendFile(__dirname + "/loginhost.html");
-//        })
 
+express.get('/test',function(req,res){
+    return res.sendFile(__dirname + '/test.html');
+})
 express.get('/createquestions',function(req,res){
     if(!req.session.user){
         return res.redirect('host');
@@ -476,12 +454,12 @@ express.get('/createquestions',function(req,res){
     return res.sendFile(__dirname + '/createquestions.html');
 })
 express.post('/processquestions',function(req,res){
-    //console.log(req.body);//for checking remove later
+
     if (!req.session.user) {
         res.redirect('/host');
     }
-    //save questions to db
-    //then redirect back to create game or something 
+
+
     return res.redirect("we tried to parse to console here");
 });
 express.post('/savequestionset',function(req,res){
@@ -493,11 +471,33 @@ express.post('/savequestionset',function(req,res){
 
     //}
 });
+express.get('/addquestion',function(req,res){
+    if(!req.session.user){
+        return res.redirect('host');
+    }
+    return res.sendFile(__dirname + '/addquestion.html');
+})
 express.get('/addquestion/*',function(req,res){
     if(!req.session.user){
         return res.redirect('host');
     }
     return res.sendFile(__dirname + '/addquestion.html');
+})
+express.get('/sendquestions',function(req,res){
+    return res.sendFile(__dirname + '/sendquestions.html');
+})
+express.post('/insertquestions',function(req,res){
+    //assume we have login
+    console.log(req.body);
+    var dbobjs = req.body;
+    var mcollection = "capitals"
+    var dbname = 'mcgame'
+    exports.insertManyToOne(mcollection,dbname,dbobjs,function(res){
+        if(res){
+            //console.log(res);
+        }
+    })
+    //exports.insertManyToOne = function(collection,dbname,objs,callback){
 })
 function makeid(){
     const length = 24;
@@ -512,15 +512,14 @@ function makeid(){
 }
 express.get('/getquestions',function(req, res){
     if(!req.session.user){
+        console.log("you are not logged in!!");
         return res.redirect('/host');
     }
     var collection = req.query['collection']
-    exports.getallindoc('test_questions','mcgame',function(docs){
-        res.jsonp(docs);
+    exports.getallindoc(collection,'mcgame',function(docs){
+        return res.jsonp(docs);
     });
-    //res.jsonp(collection);
-    //res.jsonp("not yet implemented");
-    //res.jsonp(retquestions);
+    
 });
 express.get('/getcollections',function(req, res){
     if(!req.session.user){
@@ -535,18 +534,14 @@ express.get('/getcollections',function(req, res){
         //let mq = {userdocumentid:"c15bZehI4lMwSsviGn2YULdV"};
         let mq = {userdocumentid:mydocid};
         exports.fineoneindoc(mcollection,dbn,mq,function(docs){
-            //console.log(docs);//for testing remove after some tests
-            //console.log(docs[0]['collections']);//should only have on collection
-            //res.jsonp(docs);
-            //docs = docs.replace(/_/g," ");
-            //res.send(JSON.stringify(docs[0]['collections'].replace(/_/g," ")));
+            
             res.send(JSON.stringify(docs[0]['collections']));
         })
-        //res.redirect('/game');
+    
     }
 })
 //express.get('/addquestiontoset')
-/*express.get('/updateonerec',function(req,res){//for testing delete if necessary
+/*express.get('/updateonerec',function(req,res){//for testing, ok to delete
     var myfuparray = ['this is one','this is two','this is four','this is five'];
     var mcollection= 'mydocs';
     var mdb= 'testupdate';
@@ -560,22 +555,56 @@ express.get('/getcollections',function(req, res){
     });
     res.redirect('/host');
 })*/
-express.post('/updateonerec',function(req,res){
+express.post('/updateonerec',function(req,res){// this doesn't work gonna do hardcoded values
     var mcollection= req.body.collectionname;
     var mdb= req.body.whichdb;
     var myqkey = req.body.findkey;
     var myqvalue= req.body.findvalue;
-    var mq = {myqkey:myqvalue};
+    //var mq = {myqkey:myqvalue};
+    var mq = []
+    //mq.push({
+    //    key: myqkey,
+    //    value: myqvalue
+    //});
+    mq[myqkey] = myqvalue;
     var arraykey = req.body.arrkey;
     var arrayvalue = req.body.arrlist;
     if(Array.isArray(arrayvalue)){
-        var updateval = {$addToSet:{arraykey:{$each: arrayvalue}}};    
+        var updateval = {$addToSet:{arraykey:{$each: arrayvalue}}};//i dont think this works
     }
     else {
-        var updateval = { $addToSet: { arraykey: arrayvalue } };
+        //var updateval = { $addToSet: { arraykey: arrayvalue } };
+        var addtoarray = []
+        //addtoarray.push({
+        //    key: arraykey,
+        //    value: arrayvalue
+        //});
+        addtoarray[arraykey] = arrayvalue;
+        var updateval = {$addToSet: {addtoarray}};
     }
     exports.updateRecordArray(mcollection,mdb,mq,updateval,function(result){
         //console.log(result);
+    });
+    res.redirect('/host');
+});
+express.post('/updateuserrec',function(req,res){// hardcoded values collections should have been an var now hard coded
+    //console.log(req.body);
+    var mcollection= req.body.collectionname;
+    var mdb= req.body.whichdb;
+    //var myqkey = req.body.findkey;
+    var myqvalue= req.body.findvalue;
+    var mq = {userdocumentid:myqvalue};
+    //var arraykey = req.body.arrkey;
+    var arrayvalue = req.body.arrlist;//misleading it's almost always one value
+    if(Array.isArray(arrayvalue)){
+        var updateval = {$addToSet:{'collections':{$each: arrayvalue}}};//i dont think this works
+    }
+    else {
+        //addtoarray[arraykey] = arrayvalue;
+        var updateval = {$addToSet: {'collections': arrayvalue}};
+    }
+    exports.updateRecordArray(mcollection,mdb,mq,updateval,function(result){
+        //console.log(result);var updateval = {$addToSet:{'somearr':{$each: myfuparray}}};
     });
     res.redirect('/host');
 });
@@ -600,21 +629,29 @@ express.post('/insertquestion',function(req,res){
     
     exports.insertRecord(mcollection,mdb,insertval,function(result){
         //console.log(result);
+        const data = {
+            collectionname : 'my_collections',
+            whichdb : mdb,
+            findkey : 'userdocumentid',
+            findvalue : req.session.user.documentid,
+            arrkey : 'collections',
+            arrlist : mcollection
+        };
+        axios.post('http://localhost:3000/updateuserrec',data).then(res=>{
+            //console.log(res);
+        }).catch(error =>{
+            //console.log(error);
+        })
     });
     res.redirect('/host');
 });
-express.get('/yourquestionsets',function(req,res){
+express.get('/yourquestionsets',function(req,res){//for redirecting
     if(!req.session.user){
         return res.redirect('/host');
     }
-    else{//dirty way to do it | should replace this with io.emit?
-        
+    else{
         return res.sendFile(__dirname + '/yourquestionsets.html');
-        //res.render('yourquestionsets',{docid:req.session.user.documentid},function(err,html){
-        //});
-        //express.render('yourquestionsets',{},function(err,html){
-        //express.render('yourquestionsets',{docid:req.session.user.documentid},function(err,html){
-        //});
+        
     }
 })
 express.post('/userdocid',function(req,res){
@@ -689,4 +726,20 @@ exports.insertRecord = function(collection,dbname,updatearray,callback){
         });
     })
 };
+exports.insertManyToOne = function(collection,dbname,objs,callback){
+    MongoClient.connect(url,function(err, client){
+        var dbo = client.db(dbname);
+        dbo.collection(collection).insertMany(objs,function(err,res){
+            if(err){
+                console.log("error with insert many");
+                console.log(err);
+            }
+            else{
+                callback(res);
+                client.close();
+            }
+        });
+    });
+}
+
 // end alex add

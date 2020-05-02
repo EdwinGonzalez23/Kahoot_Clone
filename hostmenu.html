@@ -29,7 +29,7 @@
                 <button class="btn btn-primary" type="button" onclick="redirecttocreatenewset()">Create a new set&nbsp;</button>
                 <button class="btn btn-primary" type="button" onclick="redirecttoquestions()">Edit a set</button>
                 <button class="btn btn-primary" type="button" onclick="redirecttoselectquestions()">Select a set</button>
-                <a class="btn btn-primary" role="button" style="background-color: rgb(50,252,0);">Start Game</a>
+                <a id="start" class="btn btn-primary" role="button" style="background-color: rgb(50,252,0);">Start Game</a>
             </div>
         </div>
     </div>
@@ -49,6 +49,16 @@
             window.location = "/addquestion"
             
         }
+        function redirecttogame(){
+            $.get("/sendQuestionsFromHost", function (data) {});
+        }
+        $(document).ready(function(){
+            document.getElementById('start').onclick = redirecttogame;
+        });
+        function redirecttogame() {
+             console.log("Clicked");
+            $.get("/sendQuestionsFromHost", function (data) {});
+        };
       </script>
 </body>
 
