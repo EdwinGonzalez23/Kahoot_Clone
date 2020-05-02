@@ -534,8 +534,16 @@ express.get('/getcollections',function(req, res){
         //let mq = {userdocumentid:"c15bZehI4lMwSsviGn2YULdV"};
         let mq = {userdocumentid:mydocid};
         exports.fineoneindoc(mcollection,dbn,mq,function(docs){
-            
-            res.send(JSON.stringify(docs[0]['collections']));
+            //console.log(docs.length);
+            //console.log(docs);
+            if(docs.length > 2){
+                res.send(JSON.stringify(docs[0]['collections']));
+                res.end();
+            }
+            else{
+                res.send(JSON.stringify({"null":"null"}));
+                res.end();
+            }
         })
     
     }
