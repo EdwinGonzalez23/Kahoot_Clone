@@ -70,7 +70,7 @@
                                                 </button>
                                             </div>
                                             <div class="modal-body">
-                                                <form id="set-form">
+                                                <form action="/insertQuestion" id="set-form">
                                                     <div class="form-group">
                                                         <input id="set-input" class="form-control set-input" name="collectionname" type="text" placeholder="Set Name"/>
                                                     </div>
@@ -146,7 +146,7 @@
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        <form id="question-form">
+                                        <form action="/insertQuestion" id="question-form">
                                             <div class="form-group">
                                                 <input id="q-set-input" class="form-control set-input" name="collectionname" type="text" placeholder="Set Name" readonly/>
                                             </div>
@@ -351,6 +351,13 @@
                 var qset = '_' + str
                 console.log(qset)
             }
+            // $.getJSON('/getCollections', function (data, textStatus) {
+            //     console.log(data)
+            //     // When the ajax call is successfuly
+            //     // /getQuestions
+            //     // /setquestionset
+            // })
+            
         });
     </script>
 </body>
