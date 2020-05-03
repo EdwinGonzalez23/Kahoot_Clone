@@ -348,8 +348,15 @@
             })
 
             function SetQuestionSet(str) {
-                var qset = '_' + str
-                console.log(qset)
+                test = {
+                    doc: str
+                }
+                $.ajax({
+                    url: '/setquestionset', 
+                    type: 'POST', 
+                    contentType: 'application/json', 
+                    data: JSON.stringify(test)
+                })
             }
             // $.getJSON('/getCollections', function (data, textStatus) {
             //     console.log(data)
