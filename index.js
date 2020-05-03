@@ -536,7 +536,7 @@ express.get('/getcollections',function(req, res){
         exports.fineoneindoc(mcollection,dbn,mq,function(docs){
             //console.log(docs.length);
             //console.log(docs);
-            if(docs.length > 2){
+            if(docs.length > 0){
                 res.send(JSON.stringify(docs[0]['collections']));
                 res.end();
             }
@@ -548,6 +548,34 @@ express.get('/getcollections',function(req, res){
     
     }
 })
+express.get('/getallinmycollection',(req,res)=>{//can be a get w/e
+    if(!req.session.user){
+        //redirect to host
+    }
+    else{
+        let dbn = "mcgame";
+        let mcollection = "my_collections";
+        var mydocid = req.session.user.documentid;
+        let mq = {userdocumentid:mydocid};
+        exports.fineoneindoc(mcollection,dbn,mq,function(myresult){
+            if(myresult.length > 0)
+            {
+                console.log("print result");
+                console.log(myresult);
+                var allmycollections = myresult[0]['collections'];
+                console.log(allmycollections);
+                allmycollections = ["algebra_questions","chemistry_test","test_questions"];
+                exports.multipledocs(allmycollections,dbn,function(docs){
+                    //console.log(docs.length);
+                    console.log("the function has returned");
+                    console.log(docs);
+                    return res.jsonp(docs);
+            })}
+        })
+        
+    }
+}
+)
 //express.get('/addquestiontoset')
 /*express.get('/updateonerec',function(req,res){//for testing, ok to delete
     var myfuparray = ['this is one','this is two','this is four','this is five'];
@@ -749,5 +777,24 @@ exports.insertManyToOne = function(collection,dbname,objs,callback){
         });
     });
 }
+exports.multipledocs = function(arrcollections,dbname,callback){
+    MongoClient.connect(url,function(err,client){
+        console.log(dbname);
+        console.log(arrcollections);
+        var dbo = client.db(dbname);
+        var everything = [];
+        for(var i = 0; i < arrcollections.length; i++){
+            //console.log(dbo.collection(arrcollections[i]).find({}).toArray());
+            dbo.collection(arrcollections[i]).find().toArray(function(err,thisdocs){
+                console.log(thisdocs);
+                everything.push(thisdocs);
+            });
+            //everything.push(dbo.collection(arrcollections[i]).find({}).toArray());
+        }
+        console.log(everything);
+        callback(everything);
+        client.close();
+    })
 
+}
 // end alex add
