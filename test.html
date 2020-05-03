@@ -70,7 +70,7 @@
                                                 </button>
                                             </div>
                                             <div class="modal-body">
-                                                <form action="/insertQuestion" id="set-form">
+                                                <form action="/insertQuestion" id="set-form" method="POST">
                                                     <div class="form-group">
                                                         <input id="set-input" class="form-control set-input" name="collectionname" type="text" placeholder="Set Name"/>
                                                     </div>
@@ -146,7 +146,7 @@
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        <form action="/insertQuestion" id="question-form">
+                                        <form action="/insertQuestion" id="question-form" method="POST">
                                             <div class="form-group">
                                                 <input id="q-set-input" class="form-control set-input" name="collectionname" type="text" placeholder="Set Name" readonly/>
                                             </div>
@@ -358,12 +358,26 @@
                     data: JSON.stringify(test)
                 })
             }
-            // $.getJSON('/getCollections', function (data, textStatus) {
-            //     console.log(data)
-            //     // When the ajax call is successfuly
-            //     // /getQuestions
-            //     // /setquestionset
-            // })
+            $.getJSON('/getCollections', function (data, textStatus) {
+                console.log(data)
+                
+                // When the ajax call is successfuly
+                // /getQuestions
+                // /setquestionset
+            })
+            var test2 = { collection: 'test_questions'}
+            $.ajax({
+                url: '/getquestions', 
+                type: 'GET', 
+                contentType: 'application/json', 
+                data: { collection: 'algebra_questions'},
+                success: function(response) {
+                    console.log(response)
+                },
+                error: function(xhr) {
+                    //Do Something to handle error
+                }
+            })
             
         });
     </script>

@@ -119,7 +119,7 @@ express.get('/host-logout', function (req, res) {
 // Host Create Game Screen
 express.get('/create', function (req, res) {
         if (req.session.user) {
-        res.sendFile(__dirname + '/hostmenu.html')
+        res.sendFile(__dirname + '/test.html')
         } else {
         res.redirect('/host')
         }
@@ -440,7 +440,7 @@ express.post('/host-login', function (req, res, next) {
             else {
                 
                 req.session.user = user;
-                
+                console.log(req.session.user)
                 return res.redirect('/host');
             }
         })
@@ -515,18 +515,19 @@ function makeid(){
     return result;
 }
 express.get('/getquestions',function(req, res){
-    if(!req.session.user){
-        console.log("you are not logged in!!");
-        return res.redirect('/host');
-    }
-    var collection = req.query['collection']
+  console.log(req.body)
+    // if(!req.session.user){
+    //     console.log("you are not logged in!!");
+    //     return res.redirect('/host');
+    // }
+    var collection = req.query['collection'] //req.body.collection
+    //var collection = req.body.collection //req.body.collection
     exports.getallindoc(collection,'mcgame',function(docs){
         return res.jsonp(docs);
     });
     
 });
 express.get('/getcollections',function(req, res){
-  console.log('fsdkljflskdjflksdjfklsa;jflksdajflkdsajflkadsjflksdajfkl')
     if(!req.session.user){
     //    return res.redirect('/host');
     res.send(JSON.stringify({"null":"null"}));
@@ -541,7 +542,7 @@ express.get('/getcollections',function(req, res){
         exports.fineoneindoc(mcollection,dbn,mq,function(docs){
             //console.log(docs.length);
             //console.log(docs);
-            if(docs.length > 2){
+            if(docs.length >= 1 ){
                 res.send(JSON.stringify(docs[0]['collections']));
                 res.end();
             }
