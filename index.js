@@ -118,6 +118,7 @@ express.get('/host-logout', function (req, res) {
 
 // Host Create Game Screen
 express.get('/create', function (req, res) {
+        console.log('loggin in?????????')
         if (req.session.user) {
         res.sendFile(__dirname + '/test.html')
         } else {

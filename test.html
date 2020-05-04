@@ -61,49 +61,49 @@
                                 </button>
 
                                 <!-- Modal -->
-                                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+                                <div class="modal fade" data-backdrop="static" id="exampleModal" tabindex="-1" role="dialog"
                                     aria-labelledby="exampleModalLabel" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h5 class="modal-title" id="exampleModalLabel">Enter Set Name</h5>
-                                                <button type="button" class="close" data-dismiss="modal"
+                                                <!-- <button type="button" class="close" data-dismiss="modal"
                                                     aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
-                                                </button>
+                                                </button> -->
                                             </div>
                                             <div class="modal-body">
                                                 <form action="/insertQuestion" id="set-form" method="POST">
                                                     <div class="form-group">
-                                                        <input id="set-input" class="form-control set-input" name="collectionname" type="text" placeholder="Set Name"/>
+                                                        <input id="set-input" class="form-control set-input form-input" name="collectionname" type="text" placeholder="Set Name"/>
                                                     </div>
                                                     <div class="form-group">
-                                                        <input id="question-input" class="form-control question-input" name="question" type="text" placeholder="question"/>
+                                                        <input id="question-input" class="form-control question-input form-input" name="question" type="text" placeholder="question"/>
                                                     </div>
                                                     <div class="form-check">
-                                                        <input class="form-check-input" type="radio" name="answerindex" id="answerindex1" value="1" checked>
-                                                        <input id="answer-input1" class="form-control answer-input" name="answer0" type="text" placeholder="Answer 1"/>
+                                                        <input class="form-check-input form-input" type="radio" name="answerindex" id="answerindex1" value="1" checked>
+                                                        <input id="answer-input1" class="form-control answer-input form-input" name="answer0" type="text" placeholder="Answer 1"/>
                                                     </div>
                                                     <div class="form-check">
-                                                        <input class="form-check-input" type="radio" name="answerindex" id="answerindex2" value="2" checked>
-                                                        <input id="answer-input2" class="form-control answer-input" name="answer1" type="text" placeholder="Answer 2"/>
+                                                        <input class="form-check-input form-input" type="radio" name="answerindex" id="answerindex2" value="2" checked>
+                                                        <input id="answer-input2" class="form-control answer-input form-input" name="answer1" type="text" placeholder="Answer 2"/>
                                                     </div>
                                                     <div class="form-check">
-                                                        <input class="form-check-input" type="radio" name="answerindex" id="answerindex3" value="3" checked>
-                                                        <input id="answer-input3" class="form-control answer-input" name="answer3" type="text" placeholder="Answer 2"/>
+                                                        <input class="form-check-input form-input" type="radio" name="answerindex" id="answerindex3" value="3" checked>
+                                                        <input id="answer-input3" class="form-control answer-input form-input" name="answer3" type="text" placeholder="Answer 2"/>
                                                     </div>
                                                     <div class="form-check">
-                                                        <input class="form-check-input" type="radio" name="answerindex" id="answerindex4" value="4" checked>
-                                                        <input id="answer-input4" class="form-control answer-input" name="answer4" type="text" placeholder="Answer 3"/>
+                                                        <input class="form-check-input form-input" type="radio" name="answerindex" id="answerindex4" value="4" checked>
+                                                        <input id="answer-input4" class="form-control answer-input form-input" name="answer4" type="text" placeholder="Answer 3"/>
                                                     </div>
                                                     <br>
                                                     <button type="submit" class="btn btn-primary">Submit</button>
                                                   </form>
                                             </div>
                                             <div class="modal-footer">
-                                                <button id="set-cancel" type="button" class="btn btn-secondary"
-                                                    data-dismiss="modal">Cancel</button>
-                                                <button id="set-okay" type="button" class="btn btn-primary">Okays</button>
+                                                <button id="set-cancel" type="button" class="btn btn-secondary set-cancel"
+                                                    data-dismiss="modal">Cancel
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -137,16 +137,16 @@
                                 </button> -->
                             </div>
                             <!-- Modal -->
-                            <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog"
+                            <div class="modal fade" data-backdrop="static" id="exampleModal2" tabindex="-1" role="dialog"
                             aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="exampleModalLabel">Enter Question</h5>
-                                        <button type="button" class="close" data-dismiss="modal"
+                                        <!-- <button type="button" class="close" data-dismiss="modal"
                                             aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
-                                        </button>
+                                        </button> -->
                                     </div>
                                     <div class="modal-body">
                                         <form action="/insertQuestion" id="question-form" method="POST">
@@ -177,9 +177,9 @@
                                           </form>
                                     </div>
                                     <div class="modal-footer">
-                                        <button id="set-cancel" type="button" class="btn btn-secondary"
-                                            data-dismiss="modal">Cancel</button>
-                                        <button id="q-submit" type="button" class="btn btn-primary">Okay</button>
+                                        <button id="set-cancel-2" type="button" class="btn btn-secondary set-cancel"
+                                            data-dismiss="modal">Cancel
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -212,97 +212,37 @@
     <script>
         $(document).ready(function() {
             var socket = io();
-
-            $("#btn-start-game").click(function() {
-                //socket.emit('startGame');
-                console.log("Start function ran");
-            });
             var setIndex;
-            var questions = [{
-                    set: "Geography",
-                    questions: [{
-                            question: "What is the capital of Alaska?",
-                            answers: ["Juno", "Seattle", "Sacramento", "Albany"],
-                            key: 0
-                        },
-                        {
-                            question: "What is the capital of California?",
-                            answers: ["Juno", "Seattle", "Sacramento", "Albany"],
-                            key: 2
-                        }
-                    ]
-                },
-                {
-                    set: "Chemistry"
-                }
-            ]
-            // Add Question Sets
-            //FillSet()
-            var qt = []
+            var qt = [] //Questions Set Array
+
             // Question Set List Item Clicked (Left Side)
             $(".question-set-item").on("click", function(e) {
-                console.log(e.target)
                 setIndex = e.target.getAttribute('data-index')
-                console.log(setIndex)
                 FillQuestions(setIndex);
                 SetQuestionSet(questions[setIndex].set)
             });
 
-            // Okay Button Hit (Add Question Set)
-            $('#set-okay').on('click', function(e) {
-                //debugger;
-                questions.push({
-                    set: $('#set-input').val(),
-                    questions: [],
-                })
-                $('#set-input').val('')
-                // ADD EVENT LISTENERS 
-                document.getElementById("questions-set-list").addEventListener("click", function(e) {
-                    if (e.target && e.target.nodeName == "LI") {
-                        var index = e.target.getAttribute('data-index')
-                        setIndex = index
-                        setIndex = e.target.getAttribute('data-index')
-                        //FillQuestions(setIndex);
-                    }
-                })
-                var len = questions.length
-                var newQuestion = {
-                    question: $('#question-input').val(),
-                    answers: [
-                        $('#answer-input1').val(),
-                        $('#answer-input2').val(),
-                        $('#answer-input3').val(),
-                        $('#answer-input4').val()
-                    ],
-                    key: $('input[name=answerindex]:checked', '#set-form').val()
-                }
-                questions[len - 1].questions.push(newQuestion)
-                //FillQuestions();
-                console.log('yo')
-                FillSet()
-            })
-
+            // Create a List of Question Set Names (Left Side Panel)
             function FillSet() {
                 $('#questions-set-list').html('')
                 for (var index in qt) {
                     $('#questions-set-list').append('<li id="question-set-item-' + index + '" data-index=' + index +
                         ' class="list-group-item question-set-item">' + qt[index].set + '</li>')
                 }
+                // Add Event Listener to new List
                 document.getElementById("questions-set-list").addEventListener("click", function(e) {
                     if (e.target && e.target.nodeName == "LI") {
                         var index = e.target.getAttribute('data-index')
                         setIndex = index
                         setIndex = e.target.getAttribute('data-index')
-                        //FillQuestions(setIndex);
                         GetQuestions(qt[setIndex].set, setIndex)
                         SetQuestionSet(qt[setIndex].set)
                     }
                 })
             }
 
+            // Add to Question List belonging to a set (Right Side Panel)
             function FillQuestions(index) {
-                console.log(index)
-                console.log(qt[index])
                 $('#accordianId').html('')
                 var question = qt[index];
                 $('#questions-header').html(question.set)
@@ -336,33 +276,13 @@
                 }
             }
 
-            $('#set-cancel').click(function(e) {
-                $('#set-input').val('')
+            // Modal Cancel Button Pressed
+            $('.set-cancel').click(function(e) {
+                var inputs = $('input').not(':input[type=submit]')
+                inputs.val('')
             })
 
-            $('#q-submit').on('click', function() {
-                $('#q-set-input').attr("placeholder", $('#questions-header').text());
-                var newQuestion = {
-                    question: $('#q-question').val(),
-                    answers: [
-                        $('#q-answer-input1').val(),
-                        $('#q-answer-input2').val(),
-                        $('#q-answer-input3').val(),
-                        $('#q-answer-input4').val()
-                    ],
-                    key: $('input[name=answerindex]:checked', '#question-form').val()
-                }
-                //debugger;
-                console.log(setIndex)
-                questions[setIndex].questions.push(newQuestion)
-                FillQuestions(setIndex)
-            })
-
-            $('#btn-start-game').on('click', function() {
-                socket.emit('startGame');
-                console.log('emitting')
-            })
-
+            // Will Set Chosen Question Set on Server
             function SetQuestionSet(str) {
                 test = {
                     doc: str
@@ -375,8 +295,9 @@
                     data: JSON.stringify(test)
                 })
             }
+
+            // Will get Collection Names that belong to logged in user from server
             $.getJSON('/getCollections', function(data, textStatus) {
-                //console.log(data)
                 var set;
                 for (set in data) {
                     qt.push({
@@ -386,12 +307,9 @@
                 }
                 console.log('hhhhhhhhhhhhhhheeeerre')
                 FillSet()
-                //console.log(qt)
-                // When the ajax call is successfuly
-                // /getQuestions
-                // /setquestionset
             })
 
+            // Gets all questions from user question sets
             function GetQuestions(setName, index) {
                 console.log('getting questions for ' + setName + ' at index ' + index)
                 $.ajax({
@@ -402,37 +320,21 @@
                         collection: setName
                     },
                     success: function(response) {
-                        //console.log('at index: ' + index)
-                        console.log(response)
                         qt[index].questions = response
                         FillQuestions(index)
-                        //console.log(qt)
-                        //FillQuestions(0)
                     },
                     error: function(xhr) {
                         //Do Something to handle error
                     }
                 })
-            }
-            // var questions = [{
-            //         set: "Geography",
-            //         questions: [{
-            //                 question: "What is the capital of Alaska?",
-            //                 answers: ["Juno", "Seattle", "Sacramento", "Albany"],
-            //                 key: 0
-            //             },
-            //             {
-            //                 question: "What is the capital of California?",
-            //                 answers: ["Juno", "Seattle", "Sacramento", "Albany"],
-            //                 key: 2
-            //             }
-            //         ]
-            //     },
-            //     {
-            //         set: "Chemistry"
-            //     }
-            // ]
 
+                // Set Collection Name to input field (which is disabled by default)
+                $('#add-question-button').click(function (e) { 
+                    $('#q-set-input').attr("placeholder", $('#questions-header').text());
+                    $('#q-set-input').attr("value", $('#questions-header').text());
+                    e.preventDefault();
+                });
+            }
         });
     </script>
 </body>
