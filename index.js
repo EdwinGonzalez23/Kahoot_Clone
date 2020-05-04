@@ -390,11 +390,7 @@ express.get('/selectquestionset',(req,res)=>{
     }
 });
 express.post('/setquestionset',function(req,res){
-    console.log('questionset set!')
-    console.log(req.body.doc)
-    console.log(req.session)
     if(req.session.user.documentid){
-        console.log('we are getting this done!')
     var questionset = req.body.doc; //'Geography'
     //questionset = 'test_questions';
     exports.getallindoc(questionset,'mcgame',function(docs){
