@@ -229,7 +229,7 @@ express.get('/sendQuestionsFromHost', function (req, res) {
     gameStart = true;
     gameLoop();
   }
-  res.redirect('/host-game');
+  //res.redirect('/host-game');
   //res.end();
 })
 express.get('/host-game', function (req, res) {  
@@ -390,7 +390,9 @@ express.get('/selectquestionset',(req,res)=>{
     }
 });
 express.post('/setquestionset',function(req,res){
-    if(req.session.user){
+    console.log('questionset set!')
+    console.log(req.body.doc)
+    if(req.session.user.doc){
     var questionset = req.body.doc; //'Geography'
     //questionset = 'test_questions';
     exports.getallindoc(questionset,'mcgame',function(docs){
@@ -515,7 +517,6 @@ function makeid(){
     return result;
 }
 express.get('/getquestions',function(req, res){
-  console.log(req.body)
     // if(!req.session.user){
     //     console.log("you are not logged in!!");
     //     return res.redirect('/host');

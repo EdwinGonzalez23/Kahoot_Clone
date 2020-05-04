@@ -42,6 +42,9 @@
         <h1 class="top-header">Our Game!</h1>
     </section>
     <section id="question-sets" class="container-fluid">
+        <form action="/host-logout" method="GET">
+            <input class="btn btn-primary card-title-header" type="submit" value="Log out!">
+        </form>
         <div class="row">
             <div class="col-md-4">
                 <div class="card">
@@ -129,9 +132,9 @@
                                 <form action="/sendQuestionsFromHost" method="GET">
                                     <input class="btn btn-primary card-title-header" type="submit" value="Start Game">
                                 </form>
-                                <button id="btn-start-game" type="button" class="btn btn-primary card-title-header" style="height: 45px;">
+                                <!-- <button id="btn-start-game" type="button" class="btn btn-primary card-title-header" style="height: 45px;">
                                     Start Game
-                                </button>
+                                </button> -->
                             </div>
                             <!-- Modal -->
                             <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog"
@@ -193,9 +196,10 @@
     </section>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.5.0.min.js"
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <!-- <script src="https://code.jquery.com/jquery-3.5.0.min.js"
         integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ=" crossorigin="anonymous"></script>
-    <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
     </script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
@@ -206,13 +210,13 @@
     </script>
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             var socket = io();
 
-           $("#btn-start-game").click(function () {
-              //socket.emit('startGame');
-              console.log("Start function ran");
-           });
+            $("#btn-start-game").click(function() {
+                //socket.emit('startGame');
+                console.log("Start function ran");
+            });
             var setIndex;
             var questions = [{
                     set: "Geography",
@@ -233,46 +237,46 @@
                 }
             ]
             // Add Question Sets
-            FillSet()
-
+            //FillSet()
+            var qt = []
             // Question Set List Item Clicked (Left Side)
-            $( ".question-set-item" ).on( "click", function(e) {
+            $(".question-set-item").on("click", function(e) {
                 console.log(e.target)
                 setIndex = e.target.getAttribute('data-index')
                 console.log(setIndex)
                 FillQuestions(setIndex);
                 SetQuestionSet(questions[setIndex].set)
             });
-            
+
             // Okay Button Hit (Add Question Set)
-            $('#set-okay').on('click', function (e) {
+            $('#set-okay').on('click', function(e) {
                 //debugger;
                 questions.push({
                     set: $('#set-input').val(),
-                    questions:[],
+                    questions: [],
                 })
                 $('#set-input').val('')
                 // ADD EVENT LISTENERS 
-                document.getElementById("questions-set-list").addEventListener("click",function(e) {
-                    if(e.target && e.target.nodeName == "LI") {
+                document.getElementById("questions-set-list").addEventListener("click", function(e) {
+                    if (e.target && e.target.nodeName == "LI") {
                         var index = e.target.getAttribute('data-index')
                         setIndex = index
                         setIndex = e.target.getAttribute('data-index')
-                        FillQuestions(setIndex);
+                        //FillQuestions(setIndex);
                     }
                 })
                 var len = questions.length
                 var newQuestion = {
                     question: $('#question-input').val(),
                     answers: [
-                        $('#answer-input1').val(), 
-                        $('#answer-input2').val(), 
-                        $('#answer-input3').val(), 
+                        $('#answer-input1').val(),
+                        $('#answer-input2').val(),
+                        $('#answer-input3').val(),
                         $('#answer-input4').val()
                     ],
                     key: $('input[name=answerindex]:checked', '#set-form').val()
                 }
-                questions[len-1].questions.push(newQuestion)
+                questions[len - 1].questions.push(newQuestion)
                 //FillQuestions();
                 console.log('yo')
                 FillSet()
@@ -280,15 +284,27 @@
 
             function FillSet() {
                 $('#questions-set-list').html('')
-                for (var index in questions) {
-                    $('#questions-set-list').append('<li id="question-set-item-'+index+'" data-index=' + index +
-                        ' class="list-group-item question-set-item">' + questions[index].set + '</li>')
+                for (var index in qt) {
+                    $('#questions-set-list').append('<li id="question-set-item-' + index + '" data-index=' + index +
+                        ' class="list-group-item question-set-item">' + qt[index].set + '</li>')
                 }
+                document.getElementById("questions-set-list").addEventListener("click", function(e) {
+                    if (e.target && e.target.nodeName == "LI") {
+                        var index = e.target.getAttribute('data-index')
+                        setIndex = index
+                        setIndex = e.target.getAttribute('data-index')
+                        //FillQuestions(setIndex);
+                        GetQuestions(qt[setIndex].set, setIndex)
+                        SetQuestionSet(qt[setIndex].set)
+                    }
+                })
             }
 
             function FillQuestions(index) {
+                console.log(index)
+                console.log(qt[index])
                 $('#accordianId').html('')
-                var question = questions[index];
+                var question = qt[index];
                 $('#questions-header').html(question.set)
                 for (var i in question.questions) {
                     // ADD A DROP DOWN LIST PER QUESTION
@@ -329,9 +345,9 @@
                 var newQuestion = {
                     question: $('#q-question').val(),
                     answers: [
-                        $('#q-answer-input1').val(), 
-                        $('#q-answer-input2').val(), 
-                        $('#q-answer-input3').val(), 
+                        $('#q-answer-input1').val(),
+                        $('#q-answer-input2').val(),
+                        $('#q-answer-input3').val(),
                         $('#q-answer-input4').val()
                     ],
                     key: $('input[name=answerindex]:checked', '#question-form').val()
@@ -351,34 +367,72 @@
                 test = {
                     doc: str
                 }
+                console.log('setting')
                 $.ajax({
-                    url: '/setquestionset', 
-                    type: 'POST', 
-                    contentType: 'application/json', 
+                    url: '/setquestionset',
+                    type: 'POST',
+                    contentType: 'application/json',
                     data: JSON.stringify(test)
                 })
             }
-            $.getJSON('/getCollections', function (data, textStatus) {
-                console.log(data)
-                
+            $.getJSON('/getCollections', function(data, textStatus) {
+                //console.log(data)
+                var set;
+                for (set in data) {
+                    qt.push({
+                        set: data[set],
+                        questions: []
+                    })
+                }
+                console.log('hhhhhhhhhhhhhhheeeerre')
+                FillSet()
+                //console.log(qt)
                 // When the ajax call is successfuly
                 // /getQuestions
                 // /setquestionset
             })
-            var test2 = { collection: 'test_questions'}
-            $.ajax({
-                url: '/getquestions', 
-                type: 'GET', 
-                contentType: 'application/json', 
-                data: { collection: 'algebra_questions'},
-                success: function(response) {
-                    console.log(response)
-                },
-                error: function(xhr) {
-                    //Do Something to handle error
-                }
-            })
-            
+
+            function GetQuestions(setName, index) {
+                console.log('getting questions for ' + setName + ' at index ' + index)
+                $.ajax({
+                    url: '/getquestions',
+                    type: 'GET',
+                    contentType: 'application/json',
+                    data: {
+                        collection: setName
+                    },
+                    success: function(response) {
+                        //console.log('at index: ' + index)
+                        console.log(response)
+                        qt[index].questions = response
+                        FillQuestions(index)
+                        //console.log(qt)
+                        //FillQuestions(0)
+                    },
+                    error: function(xhr) {
+                        //Do Something to handle error
+                    }
+                })
+            }
+            // var questions = [{
+            //         set: "Geography",
+            //         questions: [{
+            //                 question: "What is the capital of Alaska?",
+            //                 answers: ["Juno", "Seattle", "Sacramento", "Albany"],
+            //                 key: 0
+            //             },
+            //             {
+            //                 question: "What is the capital of California?",
+            //                 answers: ["Juno", "Seattle", "Sacramento", "Albany"],
+            //                 key: 2
+            //             }
+            //         ]
+            //     },
+            //     {
+            //         set: "Chemistry"
+            //     }
+            // ]
+
         });
     </script>
 </body>
