@@ -1,0 +1,102 @@
+Skip to content
+Search or jump to…
+
+Pull requests
+Issues
+Marketplace
+Explore
+ 
+@EdwinGonzalez23 
+EdwinGonzalez23
+/
+Kahoot_Clone
+1
+00
+ Code
+ Issues 0
+ Pull requests 0 Actions
+ Projects 0
+ Wiki
+ Security 1
+ Insights
+ Settings
+Kahoot_Clone/hostStartButton.html
+@JosephShafer JosephShafer fixed small score bug"
+6543815 4 days ago
+We found a potential security vulnerability in one of your dependencies.
+Only the owner of this repository can see this message.
+
+63 lines (43 sloc)  1.81 KB
+  
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+
+  <title>Kahoot Questions</title>
+</head>
+
+<body>
+
+    <div class="container-fluid text-center py-5">
+        <button class="btn startgame">
+            Redirect Players to Questions
+        </button>
+
+        <button class="btn sendquestions">
+          Send Questions
+        </button>
+
+    </div>
+
+
+
+
+      <!-- Optional JavaScript -->
+      <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+      <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+
+      <script>
+           var socket = io();
+
+           $(".startgame").click(function () {
+              socket.emit('startGame');
+              console.log("Start function ran");
+           });
+
+           $(".sendquestions").click(function () {
+             console.log("Clicked");
+            $.get("/sendQuestionsFromHost", function (data) {});
+           });
+      </script>
+</body>
+
+</html>
+© 2020 GitHub, Inc.
+Terms
+Privacy
+Security
+Status
+Help
+Contact GitHub
+Pricing
+API
+Training
+Blog
+About
+Found 7 out of 7 items
