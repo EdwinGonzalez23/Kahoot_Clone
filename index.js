@@ -15,20 +15,20 @@ var mon = require('mongoose');
 //express.engine('html',require('ejs').renderFile);
 //
 const {
-v4: uuidv4
+  v4: uuidv4
 } = require('uuid');
 
 //need this for user schema
-const{User} = require('./model/user');
+const { User } = require('./model/user');
 
 express.use(bodyParser.json());
 express.use(bodyParser.urlencoded({
-extended: true
+  extended: true
 }));
 express.use(upload.array());
 express.use(cookieParser());
 express.use(session({
-secret: "Your secret key"
+  secret: "Your secret key"
 }));
 var MongoClient = require('mongodb').MongoClient;
 var url = 'mongodb://localhost:27017';
@@ -52,12 +52,24 @@ var pin = 1234
 
 // Player Login Screen
 express.get('/', function (req, res) {
-        if (req.session.player) {
-        res.redirect('/lobby')
-        } else {
-        res.sendFile(__dirname + '/login.html');
-        }
-        });
+  res.sendFile(__dirname + '/frontpage.html');
+})
+
+express.get('/send-to-player', function (req, res) {
+  res.send('/login');
+})
+
+express.get('/send-to-host', function (req, res) {
+  res.send('/host');
+})
+
+express.get('/login', function (req, res) {
+  if (req.session.player) {
+    res.redirect('/lobby')
+  } else {
+    res.sendFile(__dirname + '/login.html');
+  }
+})
 
 // Player Login Form Submit
 express.post('/player-login', function (req, res) {
@@ -74,46 +86,46 @@ express.post('/player-login', function (req, res) {
     req.session.player = player
     res.redirect('/lobby')
   } else {
-    res.redirect('/')
+    res.redirect('/lobby')
   }
 })
 
 // Player Logout Form Submit
 express.get('/player-logout', function (req, res) {
-    logout(req.session.player.id)
-    io.emit('Game Data', players);
+  logout(req.session.player.id)
+  io.emit('Game Data', players);
 
-    req.session.destroy(function () {
-        console.log('user logged out')
-    })
-    res.redirect('/')
+  req.session.destroy(function () {
+    console.log('user logged out')
+  })
+  res.redirect('/lobby')
 })
 
 // Game Lobby (waiting area)
 express.get('/lobby', function (req, res) {
-    if (req.session.player) {
-        res.sendFile(__dirname + '/lobby.html');
-    } else {
-        res.redirect('/')
-    }
+  if (req.session.player) {
+    res.sendFile(__dirname + '/lobby.html');
+  } else {
+    res.redirect('/login')
+  }
 })
 
 // Host Login Screen
 express.get('/host', function (req, res) {
-    if (req.session.user) {
-        res.redirect('/create')
-    } else {
-        res.sendFile(__dirname + '/host.html')
-    }
+  if (req.session.user) {
+    res.redirect('/create')
+  } else {
+    res.sendFile(__dirname + '/host.html')
+  }
 })
 
 // Host Logout Form Submit
 express.get('/host-logout', function (req, res) {
-        req.session.destroy(function () {
-                console.log('user logged out')
-                })
-        res.redirect('/host')
-        })
+  req.session.destroy(function () {
+    console.log('user logged out')
+  })
+  res.redirect('/host')
+})
 
 
 // Host Create Game Screen
@@ -127,8 +139,8 @@ express.get('/create', function (req, res) {
         })
 
 io.on('connection', function (socket) {
-        // Send Players to Client
-        io.emit('Game Data', players);
+  // Send Players to Client
+  io.emit('Game Data', players);
 
   // Also added from Joey,
   // Could potentially be done
@@ -163,33 +175,33 @@ io.on('connection', function (socket) {
     io.emit('ask-to-start-game', 'game');
   })
 
-        });
+});
 
 http.listen(port, function () {
-        console.log('listening on *:' + port);
-        });
+  console.log('listening on *:' + port);
+});
 
 function playerLoggedIn(id) {
-    for (var key in players) {
-        if (players[key].id == id) {
-            return true
-        }
+  for (var key in players) {
+    if (players[key].id == id) {
+      return true
     }
-    return false
+  }
+  return false
 }
 
 function logout(id) {
-    for (var i = players.length - 1; i >= 0; i--) {
-        if (players[i].id == id) {
-            players.splice(i, 1);
-            console.log('removed player: ' + id)
-        }
+  for (var i = players.length - 1; i >= 0; i--) {
+    if (players[i].id == id) {
+      players.splice(i, 1);
+      console.log('removed player: ' + id)
     }
+  }
 }
 
 // START JOEY ADD
 
-let MAX_QUESTION_TIME = 30;
+let MAX_QUESTION_TIME = 15;
 let TIMER = 5; // for start of game
 let gameStart = false;
 let numAnswered = 0;
@@ -260,7 +272,7 @@ express.get('/scoreboard-score-get', function (req, res) {
 express.get('/hostStartButton', function (req, res) {
   res.sendFile(__dirname + '/hostStartButton.html')
 })
-
+// index coming in is 1 based
 express.post('/playerAnswer', function (req, res) {
   let maxScore = 10000;
   if (questionNumber >= 0) {
@@ -284,7 +296,7 @@ express.post('/playerAnswer', function (req, res) {
             } else {
               players[key].rightAnswers.push(questionNumber);
               console.log("Pushed Right Answer")
-              scoreChange = maxScore - ((MAX_QUESTION_TIME - parseInt(req.body.time)) * (MAX_QUESTION_TIME * 10));
+              scoreChange = maxScore - ((MAX_QUESTION_TIME - parseInt(req.body.time)) * (MAX_QUESTION_TIME * 35));
               players[key]['previousScoreAward'] = scoreChange;
             }
 
@@ -306,14 +318,14 @@ express.post('/playerAnswer', function (req, res) {
             if ((MAX_QUESTION_TIME - parseInt(req.body.time)) <= 5) {
               scoreChange = maxScore;
             } else {
-              scoreChange = maxScore - ((MAX_QUESTION_TIME - parseInt(req.body.time)) * (MAX_QUESTION_TIME * 10));
+              scoreChange = maxScore - ((MAX_QUESTION_TIME - parseInt(req.body.time)) * (MAX_QUESTION_TIME * 35));
             }
             players[key]['previousScoreAward'] = scoreChange;
           }
           numAnswered++;
           io.sockets.emit('numPlayerAnswers', numAnswered);
 
-          }
+        }
 
         // console.log(scoreChange);
 
@@ -331,10 +343,10 @@ express.post('/playerAnswer', function (req, res) {
   res.send('Got it');
 })
 
-express.post('/get-score', function(req, res) {
+express.post('/get-score', function (req, res) {
   console.log(req.body.id)
-  for(var key in players){
-    if(players[key]['id'] === req.body.id){
+  for (var key in players) {
+    if (players[key]['id'] === req.body.id) {
       res.send(players[key]['score'].toString());
       break;
     }
@@ -468,14 +480,14 @@ express.post('/processquestions',function(req,res){
 
     return res.redirect("we tried to parse to console here");
 });
-express.post('/savequestionset',function(req,res){
-    //first get user doc id
-    if(!req.session.user){
-        return res.redirect('/host');
-    }
-    //else{
+express.post('/savequestionset', function (req, res) {
+  //first get user doc id
+  if (!req.session.user) {
+    return res.redirect('/host');
+  }
+  //else{
 
-    //}
+  //}
 });
 express.get('/addquestion',function(req,res){
     if(!req.session.user){
@@ -528,8 +540,8 @@ express.get('/getquestions',function(req, res){
     });
     
 });
-express.get('/getcollections',function(req, res){
-    if(!req.session.user){
+express.get('/getcollections', function (req, res) {
+  if (!req.session.user) {
     //    return res.redirect('/host');
     res.send(JSON.stringify({"null":"null"}));
     }
@@ -669,77 +681,77 @@ express.get('/yourquestionsets',function(req,res){//for redirecting
         
     }
 })
-express.post('/userdocid',function(req,res){
-    if(!req.session.user){
-        //return res.redirect('/host');
-    }
-    else{
-        //res.json({udata:req.session.user.documentid});
-        var myres = req.session.user.documentid;
-        res.send(myres);
-    }
+express.post('/userdocid', function (req, res) {
+  if (!req.session.user) {
+    //return res.redirect('/host');
+  }
+  else {
+    //res.json({udata:req.session.user.documentid});
+    var myres = req.session.user.documentid;
+    res.send(myres);
+  }
 });
 
-exports.getallindoc = function(collection, dbname, callback){
-    MongoClient.connect(url, function(err, client) {
-        var dbo = client.db(dbname);
-        //var cursor = db.collection('question');//.find();
-        dbo.collection(collection).find({}).toArray(function(err,docs){
-            //console.log("found");
-            //exports.retquestions = function(){
-            //    return docs;
-            //}
-            callback(docs);
-            client.close();
-        }); 
-        
+exports.getallindoc = function (collection, dbname, callback) {
+  MongoClient.connect(url, function (err, client) {
+    var dbo = client.db(dbname);
+    //var cursor = db.collection('question');//.find();
+    dbo.collection(collection).find({}).toArray(function (err, docs) {
+      //console.log("found");
+      //exports.retquestions = function(){
+      //    return docs;
+      //}
+      callback(docs);
+      client.close();
     });
+
+  });
 }
-exports.fineoneindoc = function(collection, dbname, myquery,callback){
-    MongoClient.connect(url, function(err, client) {
-        var dbo = client.db(dbname);
-        //var cursor = db.collection('question');//.find();
-        dbo.collection(collection).find(myquery).toArray(function(err,docs){
-            //console.log("found");
-            //exports.retquestions = function(){
-            //    return docs;
-            //}
-            callback(docs);
-            client.close();
-        }); 
-        
+exports.fineoneindoc = function (collection, dbname, myquery, callback) {
+  MongoClient.connect(url, function (err, client) {
+    var dbo = client.db(dbname);
+    //var cursor = db.collection('question');//.find();
+    dbo.collection(collection).find(myquery).toArray(function (err, docs) {
+      //console.log("found");
+      //exports.retquestions = function(){
+      //    return docs;
+      //}
+      callback(docs);
+      client.close();
     });
+
+  });
 }
 //exports.makeCollection = function(){
 //
 //};
-exports.updateRecordArray = function(collection,dbname,mquery,updatearray,callback){
-    //var mquery = {documentid = userdocsid};
-    MongoClient.connect(url,function(err, client){
-        var dbo = client.db(dbname);
-        dbo.collection(collection).update(mquery,updatearray,{upsert:true},function(err,result){
-            if(err){
-                console.log("error updating array. why?");
-                throw err;
-            }
-            callback(result);
-            client.close();
-        });
-    })
+exports.updateRecordArray = function (collection, dbname, mquery, updatearray, callback) {
+  //var mquery = {documentid = userdocsid};
+  MongoClient.connect(url, function (err, client) {
+    var dbo = client.db(dbname);
+    dbo.collection(collection).update(mquery, updatearray, { upsert: true }, function (err, result) {
+      if (err) {
+        console.log("error updating array. why?");
+        throw err;
+      }
+      callback(result);
+      client.close();
+    });
+  })
 };
-exports.insertRecord = function(collection,dbname,updatearray,callback){
-    //var mquery = {documentid = userdocsid};
-    MongoClient.connect(url,function(err, client){
-        var dbo = client.db(dbname);
-        dbo.collection(collection).insertOne(updatearray,function(err,result){
-            if(err){
-                console.log("error inserting array. why?");
-                throw err;
-            }
-            callback(result);
-            client.close();
-        });
-    })
+exports.insertRecord = function (collection, dbname, updatearray, callback) {
+  //var mquery = {documentid = userdocsid};
+  MongoClient.connect(url, function (err, client) {
+    var dbo = client.db(dbname);
+    dbo.collection(collection).insertOne(updatearray, function (err, result) {
+      if (err) {
+        console.log("error inserting array. why?");
+        throw err;
+      }
+      callback(result);
+      client.close();
+    });
+  })
 };
 exports.insertManyToOne = function(collection,dbname,objs,callback){
     MongoClient.connect(url,function(err, client){

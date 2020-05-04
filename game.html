@@ -9,10 +9,13 @@
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
     integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Luckiest+Guy&display=swap" rel="stylesheet">
+
 
   <style>
     body {
       background-color: #1098c5;
+      font-family: 'Luckiest Guy', cursive;
     }
 
     .btn-lg {
@@ -21,12 +24,18 @@
       line-height: 2;
       border-radius: 6px;
     }
+
+    .jumbotron {
+      background-size: cover;
+      padding-top: 10%;
+      padding-bottom: 10%;
+    }
   </style>
 
   <title>Kahoot Questions</title>
 </head>
 
-<body>
+<body class="py-5">
 
 
   <div class="container-fluid ">
@@ -40,9 +49,9 @@
       </div>
       <div class="col-8 text-center">
         <div class="jumbotron ">
-          <h1>Question</h1>
+          <h1 class="display-4">Question</h1>
           <div class="w-100 mb-1"></div>
-          <p id="question-text"> Waiting for host to start the game </p>
+          <h5 id="question-text"> Waiting for host to start the game </h5>
         </div>
       </div>
       <div class="col text-center">
@@ -112,16 +121,16 @@
           let buttonid = this.id;
           let chosenAnswer = 0;
           if (buttonid === "answer-1") {
-            chosenAnswer = 0;
-          }
-          if (buttonid === "answer-2") {
             chosenAnswer = 1;
           }
-          if (buttonid === "answer-3") {
+          if (buttonid === "answer-2") {
             chosenAnswer = 2;
           }
-          if (buttonid === "answer-4") {
+          if (buttonid === "answer-3") {
             chosenAnswer = 3;
+          }
+          if (buttonid === "answer-4") {
+            chosenAnswer = 4;
           }
 
           answerJSON['answer'] = chosenAnswer;
@@ -163,14 +172,14 @@
           $("#answer-4").html(question['a4']);
           $('.numAnswers').html(0);
 
-          $.post('/get-score', answerJSON, function(thisScore){
+          $.post('/get-score', answerJSON, function (thisScore) {
             console.log(thisScore);
             $("#thisPlayerScore").html(`Score ${thisScore}`);
           })
 
         })
 
-        
+
 
         socket.on('go-to-scoreboard', function (route) {
           window.location.replace(route);
