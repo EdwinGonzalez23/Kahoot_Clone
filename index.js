@@ -229,7 +229,7 @@ express.get('/sendQuestionsFromHost', function (req, res) {
     gameStart = true;
     gameLoop();
   }
-  //res.redirect('/host-game');
+  res.redirect('/host-game');
   //res.end();
 })
 express.get('/host-game', function (req, res) {  
@@ -392,7 +392,9 @@ express.get('/selectquestionset',(req,res)=>{
 express.post('/setquestionset',function(req,res){
     console.log('questionset set!')
     console.log(req.body.doc)
-    if(req.session.user.doc){
+    console.log(req.session)
+    if(req.session.user.documentid){
+        console.log('we are getting this done!')
     var questionset = req.body.doc; //'Geography'
     //questionset = 'test_questions';
     exports.getallindoc(questionset,'mcgame',function(docs){
