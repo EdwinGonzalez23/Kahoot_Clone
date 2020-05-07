@@ -25,6 +25,10 @@
           Send Questions
         </button>
 
+        <button class="btn hardreset">
+          Reset
+        </button>
+
     </div>
 
 
@@ -53,6 +57,10 @@
              console.log("Clicked");
             $.get("/sendQuestionsFromHost", function (data) {});
            });
+           
+           $(".hardreset").click(function(){
+             socket.emit('hardreset');
+           })
 
       
 

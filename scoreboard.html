@@ -70,7 +70,7 @@
         $(document).ready(function () {
             let string = 'bg-success'
             let thisPlayerID = '';
-
+            var socket = io();
             $.get("/scoreboard-score-get", function (data) {
                 let requestData = JSON.parse(data);
                 console.log(requestData);
@@ -114,8 +114,13 @@
                 };
 
             });
-
+            
+            
+            socket.on('reset-everything', function (route) {
+                    window.location.replace(route);
+                });
         })
+
 
         //${idCheck() == requestData[i]['id'] ? 'bg-secondary' : 'bg-light'}
     </script>

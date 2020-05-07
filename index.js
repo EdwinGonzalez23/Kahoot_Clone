@@ -145,29 +145,16 @@ io.on('connection', function (socket) {
   // Also added from Joey,
   // Could potentially be done
   // instead with express get
-  socket.on('answerJSON', function (msg) {
-    //var answerJSON = JSON.parse(msg);
-    //console.log(answerJSON)
-    // console.log(msg);
-
-    // for(var key in players){
-    //   //console.log(players[key]['id'] + '  0-0-0 ' +  );
-    //   if(players[key]['id'] == answerJSON['id']){
-    //     players[key].questionAnswers.push(
-    //         {qindex: answerJSON['answer'], time: answerJSON['time']}
-    //       )
-    //       console.log(players[key].questionAnswers[questionNumber])
-    //       //console.log(questions[questionNumber])
-
-    //     players[key].score += answerJSON['time'] * 100
-    //   }
-    //}
-
-    //console.log(players)
-
-
-    // players[].answers.push.msg;
-    // console.log()
+  socket.on('hardreset', function (msg) {
+    questions = [];
+    for(var person in players){
+      players[person].score = 0
+      players[person].previousScoreAward = 0
+      players[person].submittedAnswers = []
+      players[person].rightAnswers =[]
+    }
+    gameStart = false;
+    io.emit('reset-everything', '/');
   })
 
   // hostStartButton.html
@@ -374,13 +361,20 @@ function gameLoop() {
         }
       } else {
         //sends redirect to all in game to scoreboard
-        io.sockets.emit('go-to-scoreboard', 'scoreboard');
-        questionNumber = 0;
+        
+          io.sockets.emit('go-to-scoreboard', 'scoreboard');
+      
+        questionNumber = -1;
         clearInterval(servingQuestion); // not sure if this always works, so TODO test this hard
       }
       io.sockets.emit('question', questionToSend);
       io.sockets.emit('numPlayerAnswers', numAnswered);
 
+      if(gameStart === false){
+        TIMER = 5;
+        questionNumber = -1;
+        clearInterval(servingQuestion);
+      }
 
     }
   }, 1000);
