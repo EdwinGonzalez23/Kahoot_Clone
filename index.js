@@ -48,7 +48,7 @@ var users = [{
   password: 1234
 }
 ]
-var pin = 1234
+var pin = 1234;
 
 // Player Login Screen
 express.get('/', function (req, res) {

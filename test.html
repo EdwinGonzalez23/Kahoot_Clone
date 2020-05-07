@@ -42,6 +42,9 @@
         <h1 class="top-header">Our Game!</h1>
     </section>
     <section id="question-sets" class="container-fluid">
+        <form action="/sendQuestionsFromHost" method="GET" style="float: left;">
+            <input class="btn btn-primary card-title-header" type="submit" value="Start Game">
+        </form>
         <form action="/host-logout" method="GET">
             <input class="btn btn-primary card-title-header" type="submit" value="Log out!">
         </form>
@@ -75,26 +78,26 @@
                                             <div class="modal-body">
                                                 <form action="/insertQuestion" id="set-form" method="POST">
                                                     <div class="form-group">
-                                                        <input id="set-input" class="form-control set-input form-input" name="collectionname" type="text" placeholder="Set Name"/>
+                                                        <input id="set-input" class="form-control set-input form-input" name="collectionname" type="text" placeholder="Set Name" required/>
                                                     </div>
                                                     <div class="form-group">
-                                                        <input id="question-input" class="form-control question-input form-input" name="question" type="text" placeholder="question"/>
+                                                        <input id="question-input" class="form-control question-input form-input" name="question" type="text" placeholder="question" required/>
                                                     </div>
                                                     <div class="form-check">
-                                                        <input class="form-check-input form-input" type="radio" name="answerindex" id="answerindex1" value="1" checked>
-                                                        <input id="answer-input1" class="form-control answer-input form-input" name="answer0" type="text" placeholder="Answer 1"/>
+                                                        <input class="form-check-input form-input" type="radio" name="answerindex" id="answerindex1" value="1" required>
+                                                        <input id="answer-input1" class="form-control answer-input form-input" name="answer0" type="text" placeholder="Answer 1" required/>
                                                     </div>
                                                     <div class="form-check">
-                                                        <input class="form-check-input form-input" type="radio" name="answerindex" id="answerindex2" value="2" checked>
-                                                        <input id="answer-input2" class="form-control answer-input form-input" name="answer1" type="text" placeholder="Answer 2"/>
+                                                        <input class="form-check-input form-input" type="radio" name="answerindex" id="answerindex2" value="2" required>
+                                                        <input id="answer-input2" class="form-control answer-input form-input" name="answer1" type="text" placeholder="Answer 2" required/>
                                                     </div>
                                                     <div class="form-check">
-                                                        <input class="form-check-input form-input" type="radio" name="answerindex" id="answerindex3" value="3" checked>
-                                                        <input id="answer-input3" class="form-control answer-input form-input" name="answer2" type="text" placeholder="Answer 2"/>
+                                                        <input class="form-check-input form-input" type="radio" name="answerindex" id="answerindex3" value="3" required>
+                                                        <input id="answer-input3" class="form-control answer-input form-input" name="answer2" type="text" placeholder="Answer 2" required/>
                                                     </div>
                                                     <div class="form-check">
-                                                        <input class="form-check-input form-input" type="radio" name="answerindex" id="answerindex4" value="4" checked>
-                                                        <input id="answer-input4" class="form-control answer-input form-input" name="answer3" type="text" placeholder="Answer 3"/>
+                                                        <input class="form-check-input form-input" type="radio" name="answerindex" id="answerindex4" value="4" required>
+                                                        <input id="answer-input4" class="form-control answer-input form-input" name="answer3" type="text" placeholder="Answer 3" required/>
                                                     </div>
                                                     <br>
                                                     <button type="submit" class="btn btn-primary">Submit</button>
@@ -129,9 +132,6 @@
                                     data-target="#exampleModal2" style="height: 45px;">
                                     Add New Question
                                 </button>
-                                <form action="/sendQuestionsFromHost" method="GET">
-                                    <input class="btn btn-primary card-title-header" type="submit" value="Start Game">
-                                </form>
                                 <!-- <button id="btn-start-game" type="button" class="btn btn-primary card-title-header" style="height: 45px;">
                                     Start Game
                                 </button> -->
@@ -154,23 +154,23 @@
                                                 <input id="q-set-input" class="form-control set-input" name="collectionname" type="text" placeholder="Set Name" readonly/>
                                             </div>
                                             <div class="form-group">
-                                                <input id="q-question" class="form-control question-input" name="question" type="text" placeholder="question"/>
+                                                <input id="q-question" class="form-control question-input" name="question" type="text" placeholder="question" required/>
                                             </div>
                                             <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="answerindex" id="answerindex1" value="1" checked>
-                                                <input id="q-answer-input1" class="form-control answer-input" name="answer0" type="text" placeholder="Answer 1"/>
+                                                <input class="form-check-input" type="radio" name="answerindex" id="answerindex1" value="1" required>
+                                                <input id="q-answer-input1" class="form-control answer-input" name="answer0" type="text" placeholder="Answer 1" required/>
                                             </div>
                                             <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="answerindex" id="answerindex2" value="2" checked>
-                                                <input id="q-answer-input2" class="form-control answer-input" name="answer1" type="text" placeholder="Answer 2"/>
+                                                <input class="form-check-input" type="radio" name="answerindex" id="answerindex2" value="2" required>
+                                                <input id="q-answer-input2" class="form-control answer-input" name="answer1" type="text" placeholder="Answer 2" required/>
                                             </div>
                                             <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="answerindex" id="answerindex3" value="3" checked>
-                                                <input id="q-answer-input3" class="form-control answer-input" name="answer2" type="text" placeholder="Answer 2"/>
+                                                <input class="form-check-input" type="radio" name="answerindex" id="answerindex3" value="3" required>
+                                                <input id="q-answer-input3" class="form-control answer-input" name="answer2" type="text" placeholder="Answer 2" required/>
                                             </div>
                                             <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="answerindex" id="answerindex4" value="4" checked>
-                                                <input id="q-answer-input4" class="form-control answer-input" name="answer3" type="text" placeholder="Answer 3"/>
+                                                <input class="form-check-input" type="radio" name="answerindex" id="answerindex4" value="4">
+                                                <input id="q-answer-input4" class="form-control answer-input" name="answer3" type="text" placeholder="Answer 3" required/>
                                             </div>
                                             <br>
                                             <button type="submit" class="btn btn-primary">Submit</button>
