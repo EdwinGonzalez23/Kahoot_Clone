@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "An app that mimics the Kahoot game",
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "bcrypt": "^4.0.1",
     "body-parser": "^1.19.0",
     "cookie-parser": "^1.4.5",
